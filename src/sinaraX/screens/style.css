@@ -1,7 +1,5 @@
 CreateServerScreen {
-    /* align: center middle; */
     border: round white;
-    /* padding: 1; */
     width: 5;
     height: 5;
 }
@@ -11,15 +9,19 @@ Screen {
     background: black;
 }
 
-Button {
-    margin: 1;
-}
-
 Label {
     height: 1;
+    padding: 0 1;
+    margin: 0 0 1 0;
 }
 
-TextArea{
+.button {
+    margin: 0 1 1 0;
+    padding: 0;
+    border: none;
+}
+
+.log_window{
     height: auto;
     width: 100%;
 }
@@ -28,24 +30,18 @@ Vertical, Horizontal {
     height: auto;
 }
 
-FilteredDirectoryTree, RadioSet {
-    height: auto;
-    width: auto;
-}
 RadioButton{
     border: none;
     padding: 0 2;
 }
+
 Input {
-    width: 95%;
+    width: 85%;
     height: auto;
     padding: 0 2;
     border: none;
 }
-Label{
-    padding: 0 1;
-    margin: 0 0 1 0;
-}
+
 Checkbox {
     border: none;
     width: 95%;
@@ -53,7 +49,6 @@ Checkbox {
 }
 
 Collapsible {
-    /* border: round  white; */
     border: none;
     padding: 0;
     padding-bottom: 1;
