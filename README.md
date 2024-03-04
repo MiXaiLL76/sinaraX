@@ -1,10 +1,10 @@
-# SinaraX is a TUI for the sinaraml library
+# SinaraX is a TUI for the [sinaraml](https://github.com/4-DS/sinaraml) library
 
 ## Motivation
 
 It is convenient to have a cli, but it is even more convenient to have a graphical interface for managing this cli.  
-As a regular user of sinaraml, I have developed a basic version of the sinaraX library.  
-It covers the capabilities of managing servers in sinaraml without using commands in the console.  
+As a regular user of [sinaraml](https://github.com/4-DS), I have developed a basic version of the sinaraX library.  
+It covers the capabilities of managing servers in [sinaraml](https://github.com/4-DS/sinaraml) without using commands in the console.  
 
 ## Installation
 
