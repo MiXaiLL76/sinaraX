@@ -25,6 +25,9 @@ Label {
     height: auto;
     width: 100%;
 }
+.not_valid{
+    color: red;
+}
 
 Vertical,
 Horizontal {

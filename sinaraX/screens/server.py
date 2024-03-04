@@ -34,20 +34,6 @@ class ServerScreen(ModalScreen):
                                 value="jovyan-single-use", name="instanceName"
                             )
 
-                        with Collapsible(title="Run Mode"):
-                            yield Static(
-                                "Quick - work, data, tmp will"
-                                " be mounted inside docker volumes"
-                            )
-                            yield Static(
-                                "Basic - work, data, tmp will"
-                                " be mounted from host folders"
-                            )
-
-                            with RadioSet(name="runMode"):
-                                yield RadioButton("Quick", value=True)
-                                yield RadioButton("Basic")
-
                         with Collapsible(title="Memory"):
                             yield Static(
                                 "Amount of memory requested"
@@ -56,8 +42,7 @@ class ServerScreen(ModalScreen):
                             yield Input(value="4g", name="memRequest")
 
                             yield Static(
-                                "Maximum amount of memory"
-                                " for server container"
+                                "Maximum amount of memory for server container"
                             )
                             yield Input(value="8g", name="memLimit")
 
@@ -89,11 +74,6 @@ class ServerScreen(ModalScreen):
                             yield FilePickButton(name="jovyanTmpPath")
 
                     with Vertical():
-                        with Collapsible(title="Infrastructure name to use"):
-                            yield Input(
-                                value="local_filesystem", name="infraName"
-                            )
-
                         with Collapsible(title="Server config"):
                             yield Checkbox(
                                 "Create Folders",
@@ -120,10 +100,26 @@ class ServerScreen(ModalScreen):
                             with RadioSet(name="platform"):
                                 yield RadioButton("Desktop", value=True)
                                 yield RadioButton("Remote VM")
+
+                        with Collapsible(title="Run Mode"):
+                            yield Static(
+                                "Quick - work, data, tmp will"
+                                " be mounted inside docker volumes"
+                            )
+                            yield Static(
+                                "Basic - work, data, tmp will"
+                                " be mounted from host folders"
+                            )
+
+                            with RadioSet(name="runMode"):
+                                yield RadioButton("Quick", value=True)
+                                yield RadioButton("Basic")
+
             yield Static()
             with RadioSet(name="sinara_image_num"):
                 yield RadioButton("Sinara for CV", value=True)
                 yield RadioButton("Sinara for ML")
+            yield Static()
 
             with Horizontal():
                 yield Button(
@@ -179,6 +175,8 @@ class ServerScreen(ModalScreen):
                     variant="error",
                 )
 
+            yield Static()
+
             self.static_widget: TextArea = TextArea(
                 disabled=True, id="output_text_area", classes="log_window"
             )
@@ -186,9 +184,10 @@ class ServerScreen(ModalScreen):
 
     @work(thread=True)
     def generate_config(self):
+        self.static_widget.clear()
         result = generate_from_screen(self)
         if result:
-            self.static_widget.text = json.dumps(self.config_dict, indent=4)
+            self.static_widget.load_text(json.dumps(self.config_dict, indent=4))
         return result
 
     @work(thread=True)
@@ -196,7 +195,8 @@ class ServerScreen(ModalScreen):
         cmd = "sinara server create --verbose "
         for key, val in self.config_dict.items():
             cmd += f"--{key} '{val}' "
-        self.static_widget.text = cmd
+
+        self.static_widget.clear()
 
         lines = [" "]
         for decoded_line in start_cmd(cmd):
@@ -206,10 +206,11 @@ class ServerScreen(ModalScreen):
                 else:
                     lines.append(decoded_line)
 
-            self.static_widget.text = "".join(lines[1:])
+            self.static_widget.load_text("".join([cmd + "\n"] + lines[1:]))
 
     @work(thread=True)
     def cmd(self, cmd: str):
+        self.static_widget.clear()
         lines = [" "]
         for decoded_line in start_cmd(cmd):
             if len(decoded_line) > 0:
@@ -218,7 +219,7 @@ class ServerScreen(ModalScreen):
                 else:
                     lines.append(decoded_line)
 
-            self.static_widget.text = "".join(lines[1:])
+            self.static_widget.load_text("".join([cmd + "\n"] + lines[1:]))
 
     @on(Button.Pressed, "#server_button")
     def server_button(self):
