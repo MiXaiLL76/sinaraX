@@ -2,8 +2,13 @@
 import setuptools
 from setuptools import setup
 
-from .sinaraX._version import __author__, __version__
+version_file = "sinaraX/_version.py"
 
+
+def get_version():
+    with open(version_file) as f:
+        exec(compile(f.read(), version_file, "exec"))
+    return locals()["__version__"], locals()["__author__"]
 
 def readme():
     with open("README.md", encoding="utf-8") as f:
@@ -82,6 +87,7 @@ def parse_requirements(fname="requirements/runtime.txt", with_version=True):
     packages = list(gen_packages_items())
     return packages
 
+__version__, __author__ = get_version()
 
 setup(
     name="sinaraX",
