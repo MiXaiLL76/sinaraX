@@ -182,12 +182,8 @@ class ServerScreen(ModalScreen):
             )
             yield self.static_widget
 
-    @work(thread=True)
     def generate_config(self):
-        self.static_widget.clear()
         result = generate_from_screen(self)
-        if result:
-            self.static_widget.load_text(json.dumps(self.config_dict, indent=4))
         return result
 
     @work(thread=True)
@@ -228,7 +224,10 @@ class ServerScreen(ModalScreen):
 
     @on(Button.Pressed, "#cfg_button")
     def cfg_button(self):
-        self.generate_config()
+        self.static_widget.clear()
+        result = self.generate_config()
+        if result:
+            self.static_widget.load_text(json.dumps(self.config_dict, indent=4))
 
     @on(Button.Pressed, "#server_remove_button")
     def server_remove_button(self):
