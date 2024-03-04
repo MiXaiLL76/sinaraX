@@ -19,9 +19,8 @@ SinaraX
 ```
 
 ### Main Screen
-
-![main](https://github.com/MiXaiLL76/sinaraX/raw/main/images/main.png)
+![main](https://raw.githubusercontent.com/MiXaiLL76/sinaraX/main/images/main.png)
 
 ### Server Screen
 
-![server](https://github.com/MiXaiLL76/sinaraX/raw/main/images/server.png)
+![server](https://raw.githubusercontent.com/MiXaiLL76/sinaraX/main/images/server.png)
