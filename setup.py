@@ -1,20 +1,8 @@
 #!/usr/bin/python3
-import datetime
-
 import setuptools
 from setuptools import setup
 
-now = datetime.datetime.now()
-__version__ = "{}.{}.{}".format(now.year, now.month, now.day)
-__version_tuple__ = (now.year, now.month, now.day)
-
-with open("sinaraX/_version.py", "w") as fd:
-    fd.writelines(
-        [
-            '__version__ = "{}"\n'.format(__version__),
-            "__version_tuple__ = {}\n".format(__version_tuple__),
-        ]
-    )
+from .sinaraX._version import __author__, __version__
 
 
 def readme():
@@ -102,7 +90,7 @@ setup(
     long_description=readme(),
     long_description_content_type="text/markdown",
     url="https://github.com/MiXaiLL76/sinaraX",
-    author="MiXaiLL76",
+    author=__author__,
     author_email="mike.milos@yandex.ru",
     packages=setuptools.find_packages(),
     classifiers=[
