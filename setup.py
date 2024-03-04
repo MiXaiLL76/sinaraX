@@ -9,10 +9,12 @@ __version__ = "{}.{}.{}".format(now.year, now.month, now.day)
 __version_tuple__ = (now.year, now.month, now.day)
 
 with open("sinaraX/_version.py", "w") as fd:
-    fd.writelines([
-        '__version__ = "{}"\n'.format(__version__),
-        "__version_tuple__ = {}\n".format(__version_tuple__),
-    ])
+    fd.writelines(
+        [
+            '__version__ = "{}"\n'.format(__version__),
+            "__version_tuple__ = {}\n".format(__version_tuple__),
+        ]
+    )
 
 
 def readme():
