@@ -1,7 +1,11 @@
+import platform
 from subprocess import PIPE, STDOUT, Popen
 
 
 def start_cmd(cmd: str):
+    _encoding = "utf-8"
+    if "Windows" in platform.system():
+        _encoding = "cp1251"
     with Popen(
         cmd,
         shell=True,
@@ -16,7 +20,7 @@ def start_cmd(cmd: str):
             stdout_bufer += stdout_byte
 
             if (stdout_byte == b"\r") or (stdout_byte == b"\n"):
-                yield stdout_bufer.decode()
+                yield stdout_bufer.decode(encoding=_encoding)
                 stdout_bufer = b""
 
             if stdout_byte == b"":
