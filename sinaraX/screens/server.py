@@ -15,9 +15,8 @@ from textual.widgets import (
     TextArea,
 )
 
-from .file_screen.file_tree import FilePickButton
-from .utils.config import generate_from_screen
-from .utils.process import start_cmd
+from .file_screen import FilePickButton
+from .utils import generate_from_screen, start_cmd
 
 
 class ServerScreen(ModalScreen):

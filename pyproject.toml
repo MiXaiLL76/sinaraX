@@ -1,0 +1,42 @@
+[build-system]
+requires = [
+    "setuptools>=42",
+    "wheel",
+    "build",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sinaraX"
+authors = [
+    {name = "sinaraX", email = "mike.milos@yandex.ru"},
+]
+description = "SinaraX"
+readme = "README.md"
+requires-python = ">=3.6"
+keywords = ["cli", "sinara","sinaraml", "sinaraX"]
+license = { file="LICENSE" }
+classifiers = [
+        "License :: OSI Approved :: Apache Software License",
+        "Operating System :: OS Independent",
+        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
+        "Programming Language :: Python :: Implementation :: CPython",
+        "Topic :: Scientific/Engineering :: Artificial Intelligence"
+]
+dependencies = [
+    "textual",
+    "sinaraml"
+]
+dynamic = ["version"]
+
+[project.urls]
+"Homepage" = "https://github.com/MiXaiLL76/sinaraX"
+
+[project.scripts]
+sinara = "sinaraX:main"

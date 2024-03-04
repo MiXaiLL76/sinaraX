@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Iterable
 
 from textual import on
 from textual.containers import Horizontal, ScrollableContainer
@@ -6,7 +7,14 @@ from textual.screen import ModalScreen
 from textual.widget import Widget
 from textual.widgets import Button, DirectoryTree, Input, Label, Static
 
-from ..utils.custom import FilteredDirectoryTree
+
+class FilteredDirectoryTree(DirectoryTree):
+    def filter_paths(self, paths: Iterable[Path]) -> Iterable[Path]:
+        return [
+            path
+            for path in paths
+            if (path.is_dir() and (not path.name.startswith(".")))
+        ]
 
 
 class FilePickButton(Widget, can_focus=True):

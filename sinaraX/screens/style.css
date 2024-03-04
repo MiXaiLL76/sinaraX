@@ -21,16 +21,17 @@ Label {
     border: none;
 }
 
-.log_window{
+.log_window {
     height: auto;
     width: 100%;
 }
 
-Vertical, Horizontal {
+Vertical,
+Horizontal {
     height: auto;
 }
 
-RadioButton{
+RadioButton {
     border: none;
     padding: 0 2;
 }
