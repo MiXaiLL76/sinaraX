@@ -39,4 +39,4 @@ dynamic = ["version"]
 "Homepage" = "https://github.com/MiXaiLL76/sinaraX"
 
 [project.scripts]
-sinara = "sinaraX:main"
+sinaraX = "sinaraX.__main__:main"

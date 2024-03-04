@@ -1,4 +1,9 @@
-from screens.main import SinaraX
+from .screens import SinaraX
+
+
+def main():
+    SinaraX().run()
+
 
 if __name__ == "__main__":
-    SinaraX().run()
+    main()
