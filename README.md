@@ -24,4 +24,4 @@ SinaraX
 
 ### Server Screen
 
-![server](https://github.com/MiXaiLL76/sinaraX/raw/main/server.png)
+![server](https://github.com/MiXaiLL76/sinaraX/raw/main/images/server.png)
