@@ -10,6 +10,7 @@ def get_version():
         exec(compile(f.read(), version_file, "exec"))
     return locals()["__version__"], locals()["__author__"]
 
+
 def readme():
     with open("README.md", encoding="utf-8") as f:
         content = f.read()
@@ -86,6 +87,7 @@ def parse_requirements(fname="requirements/runtime.txt", with_version=True):
 
     packages = list(gen_packages_items())
     return packages
+
 
 __version__, __author__ = get_version()
 
