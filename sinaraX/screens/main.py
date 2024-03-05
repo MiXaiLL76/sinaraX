@@ -1,8 +1,10 @@
-from sinaraml._version import __version__
+from sinaraml._version import __version__ as sinaraml_version
 from textual import on, work
 from textual.app import App
 from textual.containers import Horizontal
 from textual.widgets import Button, Label, Static
+
+from sinaraX._version import __version__ as sinaraX_version
 
 from .server import ServerScreen
 from .utils.infra import check_docker, check_docker_group, check_platform
@@ -13,7 +15,10 @@ class SinaraX(App):
     system_info_data = None
 
     def compose(self):
-        yield Label(f"SinaraML TUI by MiXaiLL76; sinaraml=={__version__}")
+        yield Label(
+            f"SinaraX by MiXaiLL76; sinaraml=={sinaraml_version};"
+            f" sinaraX=={sinaraX_version}"
+        )
 
         with Horizontal():
             yield Button(

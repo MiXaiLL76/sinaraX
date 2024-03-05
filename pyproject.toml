@@ -4,7 +4,6 @@ version = "1.0.3"
 readme = "README.md"
 authors = ["MiXaiLL76 <mike.milos@yandex.ru>"]
 description = "sinaraX - TUI for sinaraml clin"
-requires-python = ">=3.6"
 keywords = ["sinaraX", "tui", "cli", "sinaraml", "sinara"]
 classifiers = [
     "License :: OSI Approved :: Apache Software License",
