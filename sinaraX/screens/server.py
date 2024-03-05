@@ -231,15 +231,33 @@ class ServerScreen(ModalScreen):
 
     @on(Button.Pressed, "#server_remove_button")
     def server_remove_button(self):
-        self.cmd("sinara server remove")
+        cmd = "sinara server remove"
+        if self.config_dict.get("instanceName"):
+            cmd += " --instanceName " + str(
+                self.config_dict.get("instanceName")
+            )
+
+        self.cmd(cmd)
 
     @on(Button.Pressed, "#server_stop_button")
     def server_stop_button(self):
-        self.cmd("sinara server stop")
+        cmd = "sinara server stop"
+        if self.config_dict.get("instanceName"):
+            cmd += " --instanceName " + str(
+                self.config_dict.get("instanceName")
+            )
+
+        self.cmd(cmd)
 
     @on(Button.Pressed, "#server_start_button")
     def server_start_button(self):
-        self.cmd("sinara server start")
+        cmd = "sinara server start"
+        if self.config_dict.get("instanceName"):
+            cmd += " --instanceName " + str(
+                self.config_dict.get("instanceName")
+            )
+
+        self.cmd(cmd)
 
     @on(Button.Pressed, "#help_button")
     def help_button(self):
