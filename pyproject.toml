@@ -1,3 +1,37 @@
+[tool.poetry]
+name = "sinaraX"
+version = "1.0.3"
+readme = "README.md"
+authors = ["MiXaiLL76 <mike.milos@yandex.ru>"]
+description = "sinaraX - TUI for sinaraml clin"
+keywords = ["sinaraX", "tui", "cli", "sinaraml", "sinara"]
+classifiers = [
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Environment :: Console",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+packages = [
+    { include = "sinaraX" },
+]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+textual = "*"
+sinaraml = "*"
+
 [build-system]
-requires = ["setuptools>=42", "build"]
-build-backend = "setuptools.build_meta"
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+sinaraX = "sinaraX.__main__:main"
+
+[tool.poetry.urls]
+Homepage = "https://github.com/MiXaiLL76/sinaraX"

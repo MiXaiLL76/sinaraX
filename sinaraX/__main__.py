@@ -1,4 +1,7 @@
-from .screens import SinaraX
+try:
+    from .screens import SinaraX
+except ImportError:
+    from screens import SinaraX
 
 
 def main():

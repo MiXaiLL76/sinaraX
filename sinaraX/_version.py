@@ -1,2 +1,3 @@
-__version__ = "1.0.2"
-__author__ = "MiXaiLL76"
+import importlib.metadata
+
+__version__ = importlib.metadata.version(__package__ or __name__)

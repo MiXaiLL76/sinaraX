@@ -1,10 +1,16 @@
-from sinaraml._version import __version__
+from sinaraml._version import __version__ as sinaraml_version
 from textual import on, work
 from textual.app import App
 from textual.containers import Horizontal
 from textual.widgets import Button, Label, Static
 
+try:
+    from sinaraX._version import __version__ as sinaraX_version
+except ImportError:
+    sinaraX_version = "__dev__"
+
 from .server import ServerScreen
+from .update import UpdateScreen
 from .utils.infra import check_docker, check_docker_group, check_platform
 
 
@@ -13,12 +19,22 @@ class SinaraX(App):
     system_info_data = None
 
     def compose(self):
-        yield Label(f"SinaraML TUI by MiXaiLL76; sinaraml=={__version__}")
+        yield Label(
+            f"SinaraX by MiXaiLL76; sinaraml=={sinaraml_version};"
+            f" sinaraX=={sinaraX_version}"
+        )
 
         with Horizontal():
             yield Button(
                 "SERVER",
                 id="create_server_button",
+                classes="button",
+                variant="primary",
+            )
+
+            yield Button(
+                "UPDATE",
+                id="cli_update_button",
                 classes="button",
                 variant="primary",
             )
@@ -102,6 +118,10 @@ class SinaraX(App):
     @on(Button.Pressed, "#create_server_button")
     def create_server_button(self):
         self.push_screen(ServerScreen())
+
+    @on(Button.Pressed, "#cli_update_button")
+    def cli_update_button(self):
+        self.push_screen(UpdateScreen())
 
     @on(Button.Pressed, "#exit_button")
     def exit_button(self):
