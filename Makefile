@@ -20,4 +20,7 @@ linter:
 
 clean:
 	rm -rf build dist sinaraX.egg-info
-	pip3 uninstall sinaraX -y
+	pip3 uninstall sinaraX UNKNOWN -y
+
+install: sdist
+	pip3 install dist/*
