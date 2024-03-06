@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from textual import on
 from textual.containers import Horizontal, ScrollableContainer
 from textual.screen import ModalScreen
@@ -8,6 +10,16 @@ from .server_cfg import BaseFunctions
 
 class UpdateScreen(ModalScreen, BaseFunctions):
     CSS_PATH = "style.css"
+
+    BINDINGS = [
+        ("escape", "app.pop_screen", "Back to main."),
+        ("ctrl+s", "save_screen", "Save screenshot"),
+    ]
+
+    def action_save_screen(self):
+        image_folder = Path("./images/")
+        image_folder.mkdir(exist_ok=True)
+        self.app.save_screenshot(image_folder.joinpath("update.svg"))
 
     def compose(self):
         with ScrollableContainer():

@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from sinaraml._version import __version__ as sinaraml_version
 from textual import on, work
 from textual.app import App
@@ -25,6 +27,19 @@ class SinaraX(App, BaseFunctions):
         "server_screen": ServerScreen(),
         "update_screen": UpdateScreen(),
     }
+
+    BINDINGS = [
+        ("escape", "exit", "Exit"),
+        ("ctrl+s", "save_screen", "Save screenshot"),
+    ]
+
+    def action_exit(self):
+        self.exit()
+
+    def action_save_screen(self):
+        image_folder = Path("./images/")
+        image_folder.mkdir(exist_ok=True)
+        self.save_screenshot(image_folder.joinpath("main.svg"))
 
     def compose(self):
         yield Label(

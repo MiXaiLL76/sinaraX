@@ -22,6 +22,7 @@ class FileTreeScreen(ModalScreen[str | None]):
     """
 
     selected_path = None
+    BINDINGS = [("escape", "app.pop_screen", "Back to main.")]
 
     @on(Button.Pressed, ".back_button")
     def back_button(self):
