@@ -23,10 +23,19 @@ Label {
 
 .log_window {
     height: auto;
+    min-height: 15;
+    max-height: 30;
     width: 100%;
 }
+.main_log{
+    min-height: 7;
+}
+
 .not_valid{
     color: red;
+}
+#ready_configs{
+    height: 4;
 }
 
 Vertical,

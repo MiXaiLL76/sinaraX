@@ -1,4 +1,4 @@
-from .main import SinaraX
-from .server import ServerScreen
+from .main import SinaraX, sinaraX_version
+from .utils.config import AppConfig
 
-__all__ = ["SinaraX", "ServerScreen"]
+__all__ = ["SinaraX", "sinaraX_version", "AppConfig"]
