@@ -23,6 +23,7 @@ def check_docker():
         "ServerVersion": None,
         "NCPU": None,
         "MemTotal": None,
+        "ServerErrors": [],
     }
 
     if not failed:
@@ -32,11 +33,14 @@ def check_docker():
         if (start_json != -1) and (end_json != -1):
             docker_info = json.loads(output[start_json:end_json])
             result["NCPU"] = docker_info.get("NCPU")
+            result["ServerErrors"] = docker_info.get("ServerErrors", [])
             result["ServerVersion"] = docker_info.get("ServerVersion")
             result["MemTotal"] = round(
                 int(docker_info.get("MemTotal")) / 1024 / 1024, 2
             )
-
+            for err in result.get("ServerErrors"):
+                if "error during connect" in err:
+                    result["ok"] = False
     return result
 
 

@@ -1,31 +1,31 @@
-from textual import on, work
+from textual import on
 from textual.containers import Horizontal, ScrollableContainer
 from textual.screen import ModalScreen
-from textual.widgets import Button, Label, TextArea
+from textual.widgets import Button, Label, Log
 
-from .utils import start_cmd
+from .server_cfg import BaseFunctions
 
 
-class UpdateScreen(ModalScreen):
+class UpdateScreen(ModalScreen, BaseFunctions):
     CSS_PATH = "style.css"
 
     def compose(self):
         with ScrollableContainer():
             yield Label("Update dependencies")
 
-            with Horizontal():
-                yield Button(
-                    "Update sinaraml cli",
-                    id="update_sinaraml",
-                    classes="button",
-                    variant="primary",
-                )
-                yield Button(
-                    "Update sinaraX",
-                    id="update_sinaraX",
-                    classes="button",
-                    variant="primary",
-                )
+            yield Button(
+                "Update sinaraml cli",
+                id="update_sinaraml",
+                classes="button",
+                variant="primary",
+            )
+
+            yield Button(
+                "Update sinaraX",
+                id="update_sinaraX",
+                classes="button",
+                variant="primary",
+            )
 
             with Horizontal():
                 yield Button(
@@ -41,23 +41,10 @@ class UpdateScreen(ModalScreen):
                     variant="error",
                 )
 
-            self.static_widget: TextArea = TextArea(
-                disabled=True, id="output_text_area", classes="log_window"
+            self.log_window: Log = Log(
+                highlight=True, id="output_text_area", classes="log_window"
             )
-            yield self.static_widget
-
-    @work(thread=True)
-    def cmd(self, cmd: str):
-        self.static_widget.clear()
-        lines = [" "]
-        for decoded_line in start_cmd(cmd):
-            if len(decoded_line) > 0:
-                if lines[-1][-1] == "\r":
-                    lines[-1] = decoded_line
-                else:
-                    lines.append(decoded_line)
-
-            self.static_widget.load_text("".join([cmd + "\n"] + lines[1:]))
+            yield self.log_window
 
     @on(Button.Pressed, "#update_sinaraml")
     def update_sinaraml(self):

@@ -1,6 +1,6 @@
-import json
+from pathlib import Path
 
-from textual import on, work
+from textual import on
 from textual.containers import Horizontal, ScrollableContainer, Vertical
 from textual.screen import ModalScreen
 from textual.widgets import (
@@ -9,17 +9,18 @@ from textual.widgets import (
     Collapsible,
     Input,
     Label,
+    Log,
     RadioButton,
     RadioSet,
     Static,
-    TextArea,
 )
 
 from .file_screen import FilePickButton
-from .utils import generate_from_screen, start_cmd
+from .server_cfg import ServerFunctions
+from .utils import FilteredConfigTree
 
 
-class ServerScreen(ModalScreen):
+class ServerScreen(ModalScreen, ServerFunctions):
     CSS_PATH = "style.css"
     config_dict = {}
 
@@ -115,11 +116,32 @@ class ServerScreen(ModalScreen):
                                 yield RadioButton("Quick", value=True)
                                 yield RadioButton("Basic")
 
-            yield Static()
-            with RadioSet(name="sinara_image_num"):
-                yield RadioButton("Sinara for CV", value=True)
-                yield RadioButton("Sinara for ML")
-            yield Static()
+            with Horizontal():
+                with Vertical():
+                    yield Static("Sinara image for:")
+                    with RadioSet(name="sinara_image_num"):
+                        yield RadioButton("CV", value=True)
+                        yield RadioButton("ML")
+                with Vertical():
+                    yield Static("Ready configs [~/.sinaraX]:")
+                    self.config_tree = FilteredConfigTree(
+                        Path().home().joinpath(".sinaraX/"), id="ready_configs"
+                    )
+                    self.selected_config_path = ""
+                    yield self.config_tree
+                    with Horizontal():
+                        yield Button(
+                            "Load selected",
+                            id="load_cfg_button",
+                            classes="button",
+                            variant="primary",
+                        )
+                        yield Button(
+                            "Remove selected",
+                            id="remove_cfg_button",
+                            classes="button",
+                            variant="error",
+                        )
 
             with Horizontal():
                 yield Button(
@@ -140,9 +162,10 @@ class ServerScreen(ModalScreen):
                     classes="button",
                     variant="primary",
                 )
+
                 yield Button(
-                    "Get config",
-                    id="cfg_button",
+                    "Update image",
+                    id="update_image_button",
                     classes="button",
                     variant="success",
                 )
@@ -159,6 +182,18 @@ class ServerScreen(ModalScreen):
                     id="server_stop_button",
                     classes="button",
                     variant="warning",
+                )
+                yield Button(
+                    "Get config",
+                    id="get_cfg_button",
+                    classes="button",
+                    variant="success",
+                )
+                yield Button(
+                    "Save config",
+                    id="save_cfg_button",
+                    classes="button",
+                    variant="success",
                 )
 
             with Horizontal():
@@ -177,57 +212,22 @@ class ServerScreen(ModalScreen):
 
             yield Static()
 
-            self.static_widget: TextArea = TextArea(
-                disabled=True, id="output_text_area", classes="log_window"
+            self.log_window: Log = Log(
+                highlight=True, id="output_text_area", classes="log_window"
             )
-            yield self.static_widget
-
-    def generate_config(self):
-        result = generate_from_screen(self)
-        return result
-
-    @work(thread=True)
-    def create_server_cmd(self):
-        cmd = "sinara server create --verbose "
-        for key, val in self.config_dict.items():
-            cmd += f"--{key} '{val}' "
-
-        self.static_widget.clear()
-
-        lines = [" "]
-        for decoded_line in start_cmd(cmd):
-            if len(decoded_line) > 0:
-                if lines[-1][-1] == "\r":
-                    lines[-1] = decoded_line
-                else:
-                    lines.append(decoded_line)
-
-            self.static_widget.load_text("".join([cmd + "\n"] + lines[1:]))
-
-    @work(thread=True)
-    def cmd(self, cmd: str):
-        self.static_widget.clear()
-        lines = [" "]
-        for decoded_line in start_cmd(cmd):
-            if len(decoded_line) > 0:
-                if lines[-1][-1] == "\r":
-                    lines[-1] = decoded_line
-                else:
-                    lines.append(decoded_line)
-
-            self.static_widget.load_text("".join([cmd + "\n"] + lines[1:]))
+            yield self.log_window
 
     @on(Button.Pressed, "#server_button")
     def server_button(self):
         if self.generate_config():
-            self.create_server_cmd()
+            cmd = "sinara server create --verbose "
+            for key, val in self.config_dict.items():
+                if len(val) > 1:
+                    val = f"'{val}'"
 
-    @on(Button.Pressed, "#cfg_button")
-    def cfg_button(self):
-        self.static_widget.clear()
-        result = self.generate_config()
-        if result:
-            self.static_widget.load_text(json.dumps(self.config_dict, indent=4))
+                cmd += f"--{key} {val} "
+
+            self.cmd(cmd)
 
     @on(Button.Pressed, "#server_remove_button")
     def server_remove_button(self):
@@ -265,6 +265,26 @@ class ServerScreen(ModalScreen):
 
         self.cmd(cmd)
 
+    @on(Button.Pressed, "#update_image_button")
+    def update_image_button(self):
+        cmd = "sinara server update"
+        result = self.generate_config()
+        if result:
+            image = self.config_dict.get("image")
+            if image:
+                cmd += " --image "
+                if "cv" in image:
+                    cmd += "cv "
+                else:
+                    cmd += "ml "
+
+                if "exp" in image:
+                    cmd += "--experimental"
+            else:
+                cmd += " -h"
+
+        self.cmd(cmd)
+
     @on(Button.Pressed, "#help_button")
     def help_button(self):
         self.cmd("sinara server create -h")
@@ -276,3 +296,23 @@ class ServerScreen(ModalScreen):
     @on(Button.Pressed, "#exit_button")
     def exit_button(self):
         self.parent.exit()
+
+    @on(FilteredConfigTree.FileSelected)
+    def select_config(self, event: FilteredConfigTree.FileSelected):
+        return super().select_config(event)
+
+    @on(Button.Pressed, "#remove_cfg_button")
+    def remove_config_file_button(self):
+        return super().remove_config_file_button()
+
+    @on(Button.Pressed, "#load_cfg_button")
+    def load_cfg_button(self):
+        return super().load_cfg_button()
+
+    @on(Button.Pressed, "#get_cfg_button")
+    def get_cfg_button(self):
+        return super().get_cfg_button()
+
+    @on(Button.Pressed, "#save_cfg_button")
+    def save_cfg_button(self):
+        return super().save_cfg_button()

@@ -17,58 +17,6 @@ class FilteredDirectoryTree(DirectoryTree):
         ]
 
 
-class FilePickButton(Widget, can_focus=True):
-    DEFAULT_CSS = """
-    FilePickButton{
-        height: auto;
-    }
-    FilePickButton > Horizontal > .file-pick-label{
-        height: auto;
-        padding: 0 2;
-        border: none;
-        min-width: 5;
-        max-width: 95%;
-        width: 85%;
-        margin-left: 1;
-    }
-    FilePickButton > Horizontal > .file-pick-button{
-        min-width: 5;
-        border: none;
-        padding: 0;
-        margin: 0;
-        &:hover {
-            border: none;
-        }
-        &.-active {
-            border: none;
-        }
-    }
-    FilePickButton > Horizontal{
-        margin-bottom: 1;
-    }
-    """
-
-    value = ""
-
-    def compose(self):
-        with Horizontal():
-            self.input = Input(classes="file-pick-label")
-            yield self.input
-            yield Button("F", classes="file-pick-button", variant="primary")
-
-    @on(Button.Pressed)
-    def open_file_tree_screen(self):
-        def on_exit(selected_path: str) -> None:
-            self.value = str(selected_path)
-            self.input.value = self.value
-
-        self.app.push_screen(FileTreeScreen(), on_exit)
-
-    @on(Input.Changed)
-    def input_change(self, event: Input.Changed) -> None:
-        self.value = event.value
-
-
 class FileTreeScreen(ModalScreen[str | None]):
     DEFAULT_CSS = """
     """
@@ -116,3 +64,55 @@ class FileTreeScreen(ModalScreen[str | None]):
                     variant="error",
                 )
             yield FilteredDirectoryTree(Path().home().as_posix())
+
+
+class FilePickButton(Widget, can_focus=True):
+    DEFAULT_CSS = """
+    FilePickButton{
+        height: auto;
+    }
+    FilePickButton > Horizontal > .file-pick-label{
+        height: auto;
+        padding: 0 2;
+        border: none;
+        min-width: 5;
+        max-width: 95%;
+        width: 85%;
+        margin-left: 1;
+    }
+    FilePickButton > Horizontal > .file-pick-button{
+        min-width: 5;
+        border: none;
+        padding: 0;
+        margin: 0;
+        &:hover {
+            border: none;
+        }
+        &.-active {
+            border: none;
+        }
+    }
+    FilePickButton > Horizontal{
+        margin-bottom: 1;
+    }
+    """
+
+    value = ""
+
+    def compose(self):
+        with Horizontal():
+            self.input = Input(classes="file-pick-label")
+            yield self.input
+            yield Button("F", classes="file-pick-button", variant="primary")
+
+    @on(Button.Pressed)
+    def open_file_tree_screen(self):
+        self.app.push_screen(FileTreeScreen(), self.update)
+
+    def update(self, value: str):
+        self.value = str(value)
+        self.input.value = value
+
+    @on(Input.Changed)
+    def input_change(self, event: Input.Changed) -> None:
+        self.value = event.value
