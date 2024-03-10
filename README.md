@@ -6,6 +6,35 @@ It is convenient to have a cli, but it is even more convenient to have a graphic
 As a regular user of [sinaraml](https://github.com/4-DS), I have developed a basic version of the sinaraX library.  
 It covers the capabilities of managing servers in [sinaraml](https://github.com/4-DS/sinaraml) without using commands in the console.  
 
+## Screens
+
+### Main
+
+- Move to server screen
+- Move to update screen
+- Check system for sinaraml
+- Exit
+
+### Server 
+
+- Create server (```sinara server create ...```)
+- Remove server (```sinara server remove ...```)
+- Start server (```sinara server start ...```)
+- Stop server (```sinara server stop ...```)
+- HELP (```sinara server -h```)
+- Update images (```sinara server update ...```)
+- Get config (**print used config to log**)
+- Save config (**save config to ~/.sinaraX folder**)
+- Back (**back to main screen**)
+- Exit 
+
+### Update
+
+- Update sinaracli (```pip install sinaraml --upgrade```)
+- Update sinaraX (```pip install sinaraX --upgrade```)
+- Back (**back to main screen**)
+- Exit 
+
 ## Installation
 
 ```bash
