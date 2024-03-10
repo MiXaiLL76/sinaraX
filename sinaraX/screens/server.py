@@ -301,6 +301,7 @@ class ServerScreen(ModalScreen, ServerFunctions):
 
     @on(Button.Pressed, "#back_button")
     def back_button(self):
+        self.log_window.clear()
         self.dismiss()
 
     @on(Button.Pressed, "#exit_button")

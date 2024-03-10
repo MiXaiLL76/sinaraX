@@ -106,6 +106,7 @@ class SinaraX(App, BaseFunctions):
 
         else:
             lines.append("Docker is running : False")
+            self.notify("Docker is not running!", severity="error", timeout=2)
 
         if self.system_info_data["group_info"]["username"]:
             _USER = self.system_info_data["group_info"]["username"]
@@ -113,9 +114,19 @@ class SinaraX(App, BaseFunctions):
 
             docker_group = self.system_info_data["group_info"]["docker_group"]
             lines.append(f"Docker group created : {docker_group}")
+            if not docker_group:
+                self.notify(
+                    "Docker group not created!", severity="warning", timeout=2
+                )
 
             user_in_group = self.system_info_data["group_info"]["user_in_group"]
             lines.append(f"{_USER} in group docker : {user_in_group}")
+            if not docker_group:
+                self.notify(
+                    f"{_USER} not in group docker",
+                    severity="warning",
+                    timeout=2,
+                )
 
         _platform = self.system_info_data["platform_info"]["platform"]
 
@@ -123,6 +134,7 @@ class SinaraX(App, BaseFunctions):
             lines.append(f"Platform : True ; {_platform}")
         else:
             lines.append(f"Platform : False ; {_platform} USE WSL or Linux!")
+            self.notify("Platform not valid!", severity="error", timeout=2)
 
         max_index = -1
         for line in lines:
