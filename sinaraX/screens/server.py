@@ -38,7 +38,7 @@ class ServerScreen(ModalScreen, ServerFunctions):
         with ScrollableContainer():
             yield Label("Create server")
             with Collapsible(title="Optional config", id="config"):
-                with Horizontal():
+                with Horizontal(id="config_horizontal"):
                     with Vertical():
                         with Collapsible(title="Sinara server container name"):
                             yield Input(

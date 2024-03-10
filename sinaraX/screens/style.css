@@ -27,15 +27,17 @@ Label {
     max-height: 30;
     width: 100%;
 }
-.main_log{
+
+.main_log {
     min-height: 7;
 }
 
-.not_valid{
-    color: red;
-}
-#ready_configs{
+#ready_configs {
     height: 4;
+}
+
+#config_horizontal {
+    border: round rgb(0, 98, 255);
 }
 
 Vertical,
