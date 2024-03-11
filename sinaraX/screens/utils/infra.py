@@ -68,7 +68,9 @@ def check_docker_group():
         docker_group = grp.getgrnam("docker")
         result["docker_group"] = True
         result["is_unix"] = True
-        result["user_in_group"] = result["username"] in docker_group.gr_mem
+        result["user_in_group"] = (
+            result["username"] in docker_group.gr_mem
+        ) or (result["username"] == "root")
     except ModuleNotFoundError:
         pass
     except KeyError:

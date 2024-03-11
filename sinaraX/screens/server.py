@@ -87,9 +87,10 @@ class ServerScreen(ModalScreen, ServerFunctions):
                     with Vertical():
                         with Collapsible(title="Server config"):
                             yield Checkbox(
-                                "Create Folders",
-                                value=True,
+                                "Create Folders (disabled!)",
+                                value=False,
                                 name="createFolders",
+                                disabled=True,
                             )
                             yield Checkbox(
                                 "Gpu Enabled", value=True, name="gpuEnabled"
@@ -301,6 +302,7 @@ class ServerScreen(ModalScreen, ServerFunctions):
 
     @on(Button.Pressed, "#back_button")
     def back_button(self):
+        self.log_window.clear()
         self.dismiss()
 
     @on(Button.Pressed, "#exit_button")
