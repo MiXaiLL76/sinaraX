@@ -21,7 +21,7 @@ class FileTreeScreen(ModalScreen[str | None]):
     DEFAULT_CSS = """
     """
 
-    selected_path = None
+    selected_path = ""
     BINDINGS = [("escape", "app.pop_screen", "Back to main.")]
 
     @on(Button.Pressed, ".back_button")
@@ -41,7 +41,7 @@ class FileTreeScreen(ModalScreen[str | None]):
         self.static_path = Static("[]")
 
         with Horizontal():
-            yield Label("Selected path:")
+            yield Label(f"Selected path for {self.id}:")
             yield self.static_path
 
         with ScrollableContainer():
@@ -108,7 +108,7 @@ class FilePickButton(Widget, can_focus=True):
 
     @on(Button.Pressed)
     def open_file_tree_screen(self):
-        self.app.push_screen(FileTreeScreen(), self.update)
+        self.app.push_screen(FileTreeScreen(id=self.name), self.update)
 
     def update(self, value: str):
         self.value = str(value)
