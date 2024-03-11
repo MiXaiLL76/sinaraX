@@ -98,7 +98,7 @@ class FilePickButton(Widget, can_focus=True):
     }
     """
 
-    value = ""
+    _value = ""
 
     def compose(self):
         with Horizontal():
@@ -110,10 +110,18 @@ class FilePickButton(Widget, can_focus=True):
     def open_file_tree_screen(self):
         self.app.push_screen(FileTreeScreen(id=self.name), self.update)
 
-    def update(self, value: str):
-        self.value = str(value)
+    @property
+    def value(self):
+        return self._value
+
+    @value.setter
+    def value(self, value):
+        self._value = value
         self.input.value = value
+
+    def update(self, value):
+        self.value = value
 
     @on(Input.Changed)
     def input_change(self, event: Input.Changed) -> None:
-        self.value = event.value
+        self._value = event.value
