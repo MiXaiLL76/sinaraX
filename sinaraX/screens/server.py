@@ -87,9 +87,10 @@ class ServerScreen(ModalScreen, ServerFunctions):
                     with Vertical():
                         with Collapsible(title="Server config"):
                             yield Checkbox(
-                                "Create Folders",
-                                value=True,
+                                "Create Folders (disabled!)",
+                                value=False,
                                 name="createFolders",
+                                disabled=True,
                             )
                             yield Checkbox(
                                 "Gpu Enabled", value=True, name="gpuEnabled"
