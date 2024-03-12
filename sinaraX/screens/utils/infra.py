@@ -2,12 +2,13 @@ import getpass
 import json
 import platform
 
-from .process import start_cmd
+from sinaraml.server import SinaraServer
 
-check_docker_cmd = "docker info -f json"
+from .process import start_cmd
 
 
 def check_docker():
+    check_docker_cmd = "docker info -f json"
     lines = []
     failed = False
     for line in start_cmd(check_docker_cmd):
@@ -77,3 +78,64 @@ def check_docker_group():
         pass
 
     return result
+
+
+def get_sinara_servers():
+    docker_stats = check_docker()
+    containers: list[dict] = []
+    if docker_stats["ok"]:
+        cmd = "docker ps -a --filter 'label=sinaraml.platform' --format json"
+
+        for line in start_cmd(cmd):
+            try:
+                decoded_line = json.loads(line)
+            except json.decoder.JSONDecodeError:
+                continue
+
+            ports = decoded_line.get("Ports", "-,-").split(",")
+            ports = [
+                port.replace("->8888/tcp", "").split(":")[1]
+                for port in ports
+                if "->8888/tcp" in port
+            ]
+            if len(ports) == 0:
+                port = 8888
+            else:
+                port = int(ports[-1])
+
+            image = decoded_line.get("Image", "no image")
+            containers.append(
+                {
+                    "id": decoded_line.get("ID"),
+                    "instanceName": decoded_line.get("Names", "no name"),
+                    "port": port,
+                    "image": "cv" if "cv" in image else "ml",
+                    "exp": "exp" in image,
+                }
+            )
+
+    label_row = ["id", "instanceName", "port", "image", "exp"]
+    rows = []
+    for row in containers:
+        for index in list(row):
+            if index not in label_row:
+                label_row.append(index)
+        rows.append(list(row.values()))
+
+    return [label_row] + rows
+
+
+def get_instanse_token(instanceName, host_port):
+    url = SinaraServer.get_server_url(instanceName)
+    token = SinaraServer.get_server_token(url)
+    token_str = f"?token={token}" if token else ""
+    protocol = SinaraServer.get_server_protocol(url)
+
+    platform = SinaraServer.get_server_platform(instanceName)
+    server_ip = SinaraServer.get_server_ip(platform)
+    server_url = f"{protocol}://{server_ip}:{host_port}/{token_str}"
+    return server_url
+
+
+if __name__ == "__main__":
+    get_sinara_servers()
