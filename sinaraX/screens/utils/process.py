@@ -1,11 +1,12 @@
 import platform
 from subprocess import PIPE, STDOUT, Popen
 
+_encoding = "utf-8"
+if "Windows" in platform.system():
+    _encoding = "cp1251"
+
 
 def start_cmd(cmd: str):
-    _encoding = "utf-8"
-    if "Windows" in platform.system():
-        _encoding = "cp1251"
     with Popen(
         cmd,
         shell=True,

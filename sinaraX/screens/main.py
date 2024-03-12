@@ -12,11 +12,17 @@ try:
 except ImportError:
     sinaraX_version = "__dev__"
 
+from .running import RunningScreen
 from .server import ServerScreen
 from .server_cfg import BaseFunctions
 from .update import UpdateScreen
 from .utils.config import AppConfig
-from .utils.infra import check_docker, check_docker_group, check_platform
+from .utils.infra import (
+    check_docker,
+    check_docker_group,
+    check_last_version,
+    check_platform,
+)
 
 
 class SinaraX(App, BaseFunctions):
@@ -26,6 +32,7 @@ class SinaraX(App, BaseFunctions):
     SCREENS = {
         "server_screen": ServerScreen(),
         "update_screen": UpdateScreen(),
+        "running_screen": RunningScreen(),
     }
 
     BINDINGS = [
@@ -50,18 +57,32 @@ class SinaraX(App, BaseFunctions):
         with Horizontal():
             yield Button(
                 "SERVER",
-                id="create_server_button",
+                id="server_screen_start",
                 classes="button",
                 variant="primary",
             )
 
             yield Button(
                 "UPDATE",
-                id="cli_update_button",
+                id="update_screen_start",
                 classes="button",
                 variant="primary",
             )
 
+            yield Button(
+                "RUNNING",
+                id="running_screen_start",
+                classes="button",
+                variant="primary",
+            )
+
+        with Horizontal():
+            yield Button(
+                "Check system",
+                id="check_button",
+                classes="button",
+                variant="primary",
+            )
             yield Button(
                 "Exit",
                 id="exit_button",
@@ -69,17 +90,10 @@ class SinaraX(App, BaseFunctions):
                 variant="warning",
             )
 
-        yield Button(
-            "Check system",
-            id="check_button",
-            classes="button",
-            variant="primary",
-        )
-
         yield Static()
 
         self.log_window: Log = Log(
-            highlight=True, id="output_text_area", classes="log_window main_log"
+            highlight=True, id="main_log_window", classes="log_window"
         )
         yield self.log_window
 
@@ -92,6 +106,12 @@ class SinaraX(App, BaseFunctions):
             "docker_info": check_docker(),
             "platform_info": check_platform(),
             "group_info": check_docker_group(),
+            "sinaraX": (
+                check_last_version("sinaraX")
+                if sinaraX_version != "__dev__"
+                else (True, "Dev")
+            ),
+            "sinaraml": check_last_version("sinaraml"),
         }
         lines = []
         if self.system_info_data["docker_info"]["ok"]:
@@ -136,6 +156,16 @@ class SinaraX(App, BaseFunctions):
             lines.append(f"Platform : False ; {_platform} USE WSL or Linux!")
             self.notify("Platform not valid!", severity="error", timeout=2)
 
+        lines.append(
+            f"sinaraX : {self.system_info_data['sinaraX'][0]} ;"
+            f" {self.system_info_data['sinaraX'][1]}"
+        )
+        lines.append(
+            f"sinaraml : {self.system_info_data['sinaraml'][0]} ;"
+            f" {self.system_info_data['sinaraml'][1]}"
+        )
+
+        # map strings
         max_index = -1
         for line in lines:
             _idx = line.find(":")
@@ -153,13 +183,17 @@ class SinaraX(App, BaseFunctions):
         self.system_info_data = None
         self.get_system_info()
 
-    @on(Button.Pressed, "#create_server_button")
-    def create_server_button(self):
+    @on(Button.Pressed, "#server_screen_start")
+    def server_screen_start(self):
         self.push_screen("server_screen")
 
-    @on(Button.Pressed, "#cli_update_button")
-    def cli_update_button(self):
+    @on(Button.Pressed, "#update_screen_start")
+    def update_screen_start(self):
         self.push_screen("update_screen")
+
+    @on(Button.Pressed, "#running_screen_start")
+    def running_screen_start(self):
+        self.push_screen("running_screen")
 
     @on(Button.Pressed, "#exit_button")
     def exit_button(self):
