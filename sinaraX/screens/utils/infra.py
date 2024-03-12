@@ -1,7 +1,9 @@
 import getpass
+import importlib.metadata
 import json
 import platform
 
+import requests
 from sinaraml.server import SinaraServer
 
 from .process import start_cmd
@@ -135,6 +137,40 @@ def get_instanse_token(instanceName, host_port):
     server_ip = SinaraServer.get_server_ip(platform)
     server_url = f"{protocol}://{server_ip}:{host_port}/{token_str}"
     return server_url
+
+
+def check_last_version(name):
+    try:
+        local_version = name + "-" + importlib.metadata.version(name)
+
+        url = f"https://pypi.org/simple/{name}/"
+        resp = requests.get(url)
+        if resp.status_code == 200:
+            text = resp.text.lower()
+            lines = text.split("\n")
+            lines = [line for line in lines if ".tar.gz" in line]
+            version_idx = -1
+            for idx, line in enumerate(lines):
+                start_idx = line.find(">") + 1
+                if start_idx == -1:
+                    continue
+
+                end_idx = line.find(".tar.gz", start_idx)
+
+                lines[idx] = line[start_idx:end_idx]
+                if local_version == lines[idx]:
+                    version_idx = idx
+
+            if version_idx < idx:
+                return False, f"Available new! [{lines[idx]}]"
+        else:
+            return False, "Pypi not available from this env!"
+    except UnboundLocalError:
+        return False, "UnboundLocalError!"
+    except ImportError:
+        return False, "ImportError!"
+
+    return True, "Latest!"
 
 
 if __name__ == "__main__":

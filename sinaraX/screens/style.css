@@ -28,10 +28,6 @@ Label {
     width: 100%;
 }
 
-.main_log {
-    min-height: 7;
-}
-
 #ready_configs {
     height: 4;
 }
@@ -40,11 +36,15 @@ Label {
     border: round rgb(0, 98, 255);
 }
 
-#running_screen_log_window{
+#running_screen_log_window {
     height: auto;
     min-height: 5;
     width: auto;
     min-width: 50%;
+}
+
+#main_log_window {
+    min-height: 8;
 }
 
 Vertical,
@@ -76,6 +76,6 @@ Collapsible {
     padding-bottom: 1;
 }
 
-DataTable{
+DataTable {
     width: auto;
 }
