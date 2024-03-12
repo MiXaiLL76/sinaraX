@@ -40,7 +40,9 @@ class ServerScreen(ModalScreen, ServerFunctions):
             with Collapsible(title="Optional config", id="config"):
                 with Horizontal(id="config_horizontal"):
                     with Vertical():
-                        with Collapsible(title="Sinara server container name"):
+                        with Collapsible(
+                            title="Sinara server container and config name"
+                        ):
                             yield Input(
                                 value="jovyan-single-use", name="instanceName"
                             )
@@ -72,23 +74,11 @@ class ServerScreen(ModalScreen, ServerFunctions):
                                 value="4", type="number", name="cpuLimit"
                             )
 
-                        with Collapsible(
-                            title="Folders Path (only used in basic mode)"
-                        ):
-                            yield Static("Path to data fodler on host")
-                            yield FilePickButton(name="jovyanDataPath")
-
-                            yield Static("Path to work fodler on host")
-                            yield FilePickButton(name="jovyanWorkPath")
-
-                            yield Static("Path to tmp fodler on host")
-                            yield FilePickButton(name="jovyanTmpPath")
-
                     with Vertical():
                         with Collapsible(title="Server config"):
                             yield Checkbox(
                                 "Create Folders (disabled!)",
-                                value=False,
+                                value=True,
                                 name="createFolders",
                                 disabled=True,
                             )
@@ -123,9 +113,17 @@ class ServerScreen(ModalScreen, ServerFunctions):
                                 " be mounted from host folders"
                             )
 
-                            with RadioSet(name="runMode"):
+                            with RadioSet(name="runMode", id="run_mode"):
                                 yield RadioButton("Quick", value=True)
                                 yield RadioButton("Basic")
+
+                            yield Static(
+                                "Path to parent folder for data, work and tmp"
+                            )
+                            self.jovyanRootPath_picker = FilePickButton(
+                                name="jovyanRootPath", disabled=True
+                            )
+                            yield self.jovyanRootPath_picker
 
             with Horizontal():
                 with Vertical():
@@ -140,7 +138,15 @@ class ServerScreen(ModalScreen, ServerFunctions):
                     )
                     self.selected_config_path = ""
                     yield self.config_tree
+
+                    self.config_tree.children
                     with Horizontal():
+                        yield Button(
+                            "Save config",
+                            id="save_cfg_button",
+                            classes="button",
+                            variant="success",
+                        )
                         yield Button(
                             "Load selected",
                             id="load_cfg_button",
@@ -197,12 +203,6 @@ class ServerScreen(ModalScreen, ServerFunctions):
                 yield Button(
                     "Get config",
                     id="get_cfg_button",
-                    classes="button",
-                    variant="success",
-                )
-                yield Button(
-                    "Save config",
-                    id="save_cfg_button",
                     classes="button",
                     variant="success",
                 )
@@ -328,3 +328,10 @@ class ServerScreen(ModalScreen, ServerFunctions):
     @on(Button.Pressed, "#save_cfg_button")
     def save_cfg_button(self):
         return super().save_cfg_button()
+
+    @on(RadioSet.Changed, "#run_mode")
+    def changed_visible(self, event: RadioSet.Changed):
+        if event.index == 1:
+            self.jovyanRootPath_picker.disabled = False
+        else:
+            self.jovyanRootPath_picker.disabled = True

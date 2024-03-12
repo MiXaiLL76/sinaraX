@@ -106,7 +106,7 @@ def generate_from_screen(screen):
 
     try:
         if screen.config_dict.get("runMode", "") == "b":
-            for _key in ["jovyanDataPath", "jovyanWorkPath", "jovyanTmpPath"]:
+            for _key in ["jovyanRootPath"]:
                 assert (
                     len(screen.config_dict.get(_key, "")) > 0
                 ), f"{_key} empty!"
