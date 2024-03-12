@@ -6,9 +6,9 @@ from textual import work
 
 from .utils import (
     FilteredConfigTree,
+    decode_lines,
     generate_from_screen,
     load_from_file,
-    start_cmd,
 )
 
 
@@ -30,14 +30,7 @@ class BaseFunctions:
     @work(thread=True)
     def cmd(self, cmd: str):
         self.write_log_lines([cmd + "\n"])
-        lines = [" "]
-        for decoded_line in start_cmd(cmd):
-            if len(decoded_line) > 0:
-                if lines[-1][-1] == "\r":
-                    lines[-1] = decoded_line
-                else:
-                    lines.append(decoded_line)
-
+        for lines in decode_lines(cmd):
             self.write_log_lines([cmd + "\n"] + lines[1:])
 
 
@@ -83,7 +76,9 @@ class ServerFunctions(BaseFunctions):
         selected_file = Path(str(self.selected_config_path))
         if selected_file.is_file():
             load_from_file(self, selected_file.as_posix())
-            self.log_window.write_line(f"Config {selected_file} loaded!")
+            self.log_window.write_line(f"[True] Config {selected_file} loaded!")
+        else:
+            self.log_window.write_line("[False] Config not selected!")
         self.reload_config_dir()
 
     def get_cfg_button(self):
