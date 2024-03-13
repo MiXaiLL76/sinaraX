@@ -100,6 +100,9 @@ def get_sinara_servers():
                 for port in ports
                 if "->8888/tcp" in port
             ]
+
+            ports = [port for port in ports if len(port.strip()) > 0]
+
             if len(ports) == 0:
                 port = 8888
             else:
@@ -139,9 +142,9 @@ def get_instanse_token(instanceName, host_port):
     return server_url
 
 
-def check_last_version(name):
+def check_last_version(name: str):
     try:
-        local_version = name + "-" + importlib.metadata.version(name)
+        local_version = (name + "-" + importlib.metadata.version(name)).lower()
 
         url = f"https://pypi.org/simple/{name}/"
         resp = requests.get(url)
@@ -157,7 +160,7 @@ def check_last_version(name):
 
                 end_idx = line.find(".tar.gz", start_idx)
 
-                lines[idx] = line[start_idx:end_idx]
+                lines[idx] = line[start_idx:end_idx].lower()
                 if local_version == lines[idx]:
                     version_idx = idx
 
