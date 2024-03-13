@@ -1,5 +1,6 @@
 from pathlib import Path
 
+from sinaraml.server import SinaraServer
 from textual import on
 from textual.containers import Horizontal, ScrollableContainer, Vertical
 from textual.screen import ModalScreen
@@ -44,20 +45,25 @@ class ServerScreen(ModalScreen, ServerFunctions):
                             title="Sinara server container and config name"
                         ):
                             yield Input(
-                                value="jovyan-single-use", name="instanceName"
+                                value=SinaraServer.container_name,
+                                name="instanceName",
                             )
 
                         with Collapsible(title="Memory"):
                             yield Static(
-                                "Amount of memory requested"
-                                " for server container"
-                            )
-                            yield Input(value="4g", name="memRequest")
-
-                            yield Static(
                                 "Maximum amount of memory for server container"
+                                " (GB)"
                             )
-                            yield Input(value="8g", name="memLimit")
+                            yield Input(
+                                value=str(
+                                    SinaraServer.get_memory_size_limit()
+                                    // 1024
+                                    // 1024
+                                    // 1024
+                                ),
+                                type="number",
+                                name="memLimit",
+                            )
 
                             yield Static(
                                 "Maximum amount of shared memory for"
@@ -71,7 +77,9 @@ class ServerScreen(ModalScreen, ServerFunctions):
                                 " server container"
                             )
                             yield Input(
-                                value="4", type="number", name="cpuLimit"
+                                value=str(SinaraServer.get_cpu_cores_limit()),
+                                type="number",
+                                name="cpuLimit",
                             )
 
                     with Vertical():
@@ -233,8 +241,12 @@ class ServerScreen(ModalScreen, ServerFunctions):
         if self.generate_config():
             cmd = "sinara server create --verbose "
             for key, val in self.config_dict.items():
-                if len(val) > 1:
+                if type(val) is str:
                     val = f"'{val}'"
+                elif type(val) is int:
+                    val = f"{val}"
+                else:
+                    continue
 
                 cmd += f"--{key} {val} "
 

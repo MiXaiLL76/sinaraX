@@ -3,6 +3,7 @@ import json
 from pathlib import Path
 from typing import Iterable
 
+from sinaraml.server import SinaraServer
 from textual.widgets import Collapsible, DirectoryTree, RadioSet
 
 
@@ -42,6 +43,36 @@ def remap_config(_dict: dict, _from_screen=True):
         "experimental": {True: " ", False: None},
         "insecure": {True: " ", False: None},
     }
+
+    if _dict.get("memLimit"):
+        if _from_screen:
+            _dict["memLimit"] = int(
+                float(_dict.get("memLimit")) * 1024 * 1024 * 1024
+            )
+        else:
+            memLimit = str(_dict["memLimit"])
+            if "g" in memLimit:
+                memLimit = int(memLimit.replace("g", ""))
+            elif "m" in memLimit:
+                memLimit = float(memLimit.replace("m", "")) / 1024
+            elif type(_dict["memLimit"]) is int:
+                max_mem = SinaraServer.get_memory_size_limit()
+                if int(memLimit) > max_mem:
+                    memLimit = max_mem
+
+                memLimit = int(memLimit) // 1024 // 1024 // 1024
+            else:
+                memLimit = None
+                del _dict["memLimit"]
+
+            if memLimit is not None:
+                _dict["memLimit"] = str(memLimit)
+
+    if _dict.get("cpuLimit"):
+        if _from_screen:
+            _dict["cpuLimit"] = int(_dict["cpuLimit"])
+        else:
+            _dict["cpuLimit"] = str(_dict["cpuLimit"])
 
     for key, val in _remap_radio.items():
         remap_radio_set(
