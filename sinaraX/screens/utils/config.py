@@ -94,6 +94,7 @@ def remap_config(_dict: dict, _from_screen=True):
             int(_dict.get("sinara_image_num")) - 1
         ]
         _dict["image"] = image
+        _dict["project"] = "cv" if "cv" in image else "ml"
         del _dict["sinara_image_num"]
     else:
         image = _dict.get("image")
