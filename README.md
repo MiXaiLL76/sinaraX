@@ -1,5 +1,12 @@
 # SinaraX is a TUI for the [sinaraml](https://github.com/4-DS/sinaraml) library
 
+| lib      | pypy                                                                                     |
+| -------- | ---------------------------------------------------------------------------------------- |
+| SinaraX  | [![SinaraX](https://img.shields.io/pypi/v/sinarax)](https://pypi.org/project/sinarax)    |
+| sinaraml | [![sinaraml](https://img.shields.io/pypi/v/sinaraml)](https://pypi.org/project/sinaraml) |
+| textual  | [![textual](https://img.shields.io/pypi/v/textual)](https://pypi.org/project/textual)    |
+
+
 ## Motivation
 
 It is convenient to have a cli, but it is even more convenient to have a graphical interface for managing this cli.  
