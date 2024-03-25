@@ -2,18 +2,21 @@ from pathlib import Path
 
 from sinaraml.server import SinaraServer
 from textual import on
-from textual.containers import Horizontal, ScrollableContainer, Vertical
+from textual.containers import Horizontal, Vertical
+from textual.events import Mount
 from textual.screen import ModalScreen
 from textual.widgets import (
     Button,
     Checkbox,
     Collapsible,
+    Footer,
     Input,
-    Label,
     Log,
     RadioButton,
     RadioSet,
     Static,
+    TabbedContent,
+    TabPane,
 )
 
 from .file_screen import FilePickButton
@@ -26,8 +29,15 @@ class ServerScreen(ModalScreen, ServerFunctions):
     config_dict = {}
 
     BINDINGS = [
-        ("escape", "app.pop_screen", "Back to main."),
-        ("ctrl+s", "save_screen", "Save screenshot"),
+        ("escape", "app.pop_screen"),
+        ("ctrl+s", "save_screen"),
+        ("f1", "load_config", "Load cfg"),
+        ("f2", "create_server", "Server Create"),
+        ("f3", "start_server", "Start"),
+        ("f4", "stop_server", "Stop"),
+        ("f5", "stop_remove", "Remove"),
+        ("u", ""),
+        ("s", ""),
     ]
 
     def action_save_screen(self):
@@ -36,19 +46,109 @@ class ServerScreen(ModalScreen, ServerFunctions):
         self.app.save_screenshot(image_folder.joinpath("server.svg"))
 
     def compose(self):
-        with ScrollableContainer():
-            yield Label("Create server")
-            with Collapsible(title="Optional config", id="config"):
-                with Horizontal(id="config_horizontal"):
-                    with Vertical():
+        yield Footer()
+        with TabbedContent(initial="server_tab"):
+            with TabPane("Server", id="server_tab"):
+                yield Static("Ready configs [~/.sinaraX]:")
+                self.config_tree = FilteredConfigTree(
+                    Path().home().joinpath(".sinaraX/"), id="ready_configs"
+                )
+                self.selected_config_path = ""
+                yield self.config_tree
+
+                with Horizontal():
+                    yield Button(
+                        "Load selected",
+                        id="load_cfg_button",
+                        classes="button",
+                        variant="primary",
+                    )
+                    yield Button(
+                        "Remove selected",
+                        id="remove_cfg_button",
+                        classes="button",
+                        variant="error",
+                    )
+                    yield Button(
+                        "Print config",
+                        id="get_cfg_button",
+                        classes="button",
+                        variant="success",
+                    )
+
+                yield Static("Server: ")
+
+                with Horizontal():
+                    yield Button(
+                        "Create!",
+                        id="server_create_button",
+                        classes="button",
+                        variant="success",
+                    )
+                    yield Button(
+                        "Start!",
+                        id="server_start_button",
+                        classes="button",
+                        variant="success",
+                    )
+                    yield Button(
+                        "Update image",
+                        id="update_image_button",
+                        classes="button",
+                        variant="success",
+                    )
+
+                with Horizontal():
+                    yield Button(
+                        "Remove!",
+                        id="server_remove_button",
+                        classes="button",
+                        variant="error",
+                    )
+                    yield Button(
+                        "Stop!",
+                        id="server_stop_button",
+                        classes="button",
+                        variant="warning",
+                    )
+
+            with TabPane("Config", id="config_tab"):
+                yield Button(
+                    "Save config",
+                    id="save_cfg_button",
+                    classes="button",
+                    variant="success",
+                )
+                with TabbedContent(initial="base"):
+                    with TabPane("Base", id="base"):
                         with Collapsible(
-                            title="Sinara server container and config name"
+                            title="Sinara server container and config name",
+                            collapsed=False,
                         ):
                             yield Input(
                                 value=SinaraServer.container_name,
                                 name="instanceName",
                             )
 
+                        with Horizontal():
+                            with Vertical():
+                                with Collapsible(
+                                    title="Host where the server is run",
+                                    collapsed=False,
+                                ):
+                                    with RadioSet(name="platform"):
+                                        yield RadioButton("Desktop", value=True)
+                                        yield RadioButton("Remote VM")
+
+                            with Vertical():
+                                with Collapsible(
+                                    title="Sinara image for", collapsed=False
+                                ):
+                                    with RadioSet(name="sinara_image_num"):
+                                        yield RadioButton("CV", value=True)
+                                        yield RadioButton("ML")
+
+                    with TabPane("Resource", id="resource"):
                         sinara_mem = (
                             SinaraServer.get_memory_size_limit()
                             // 1024
@@ -59,7 +159,7 @@ class ServerScreen(ModalScreen, ServerFunctions):
                         if base_shm_size < 1:
                             base_shm_size = 1
 
-                        with Collapsible(title="Memory"):
+                        with Collapsible(title="Memory", collapsed=False):
                             yield Static(
                                 "Maximum amount of memory for server container"
                                 " (GB)"
@@ -79,7 +179,7 @@ class ServerScreen(ModalScreen, ServerFunctions):
                                 name="shm_size",
                             )
 
-                        with Collapsible(title="Cpu"):
+                        with Collapsible(title="Cpu", collapsed=False):
                             yield Static(
                                 " Number of CPU cores to use for"
                                 " server container"
@@ -90,8 +190,10 @@ class ServerScreen(ModalScreen, ServerFunctions):
                                 name="cpuLimit",
                             )
 
-                    with Vertical():
-                        with Collapsible(title="Server config"):
+                    with TabPane("Extra", id="extra"):
+                        with Collapsible(
+                            title="Server config", collapsed=False
+                        ):
                             yield Checkbox(
                                 "Create Folders (disabled!)",
                                 value=True,
@@ -112,14 +214,7 @@ class ServerScreen(ModalScreen, ServerFunctions):
                                 name="experimental",
                             )
 
-                        with Collapsible(title="Server platform"):
-                            yield Static("Host where the server is run")
-
-                            with RadioSet(name="platform"):
-                                yield RadioButton("Desktop", value=True)
-                                yield RadioButton("Remote VM")
-
-                        with Collapsible(title="Run Mode"):
+                        with Collapsible(title="Run Mode", collapsed=False):
                             yield Static(
                                 "Quick - work, data, tmp will"
                                 " be mounted inside docker volumes"
@@ -141,111 +236,27 @@ class ServerScreen(ModalScreen, ServerFunctions):
                             )
                             yield self.jovyanRootPath_picker
 
-            with Horizontal():
-                with Vertical():
-                    yield Static("Sinara image for:")
-                    with RadioSet(name="sinara_image_num"):
-                        yield RadioButton("CV", value=True)
-                        yield RadioButton("ML")
-                with Vertical():
-                    yield Static("Ready configs [~/.sinaraX]:")
-                    self.config_tree = FilteredConfigTree(
-                        Path().home().joinpath(".sinaraX/"), id="ready_configs"
-                    )
-                    self.selected_config_path = ""
-                    yield self.config_tree
-
-                    self.config_tree.children
-                    with Horizontal():
-                        yield Button(
-                            "Save config",
-                            id="save_cfg_button",
-                            classes="button",
-                            variant="success",
-                        )
-                        yield Button(
-                            "Load selected",
-                            id="load_cfg_button",
-                            classes="button",
-                            variant="primary",
-                        )
-                        yield Button(
-                            "Remove selected",
-                            id="remove_cfg_button",
-                            classes="button",
-                            variant="error",
-                        )
-
-            with Horizontal():
-                yield Button(
-                    "Create!",
-                    id="server_button",
-                    classes="button",
-                    variant="success",
-                )
-                yield Button(
-                    "Remove!",
-                    id="server_remove_button",
-                    classes="button",
-                    variant="error",
-                )
-                yield Button(
-                    "HELP",
-                    id="help_button",
-                    classes="button",
-                    variant="primary",
-                )
-
-                yield Button(
-                    "Update image",
-                    id="update_image_button",
-                    classes="button",
-                    variant="success",
-                )
-
-            with Horizontal():
-                yield Button(
-                    "Start!",
-                    id="server_start_button",
-                    classes="button",
-                    variant="success",
-                )
-                yield Button(
-                    "Stop!",
-                    id="server_stop_button",
-                    classes="button",
-                    variant="warning",
-                )
-                yield Button(
-                    "Get config",
-                    id="get_cfg_button",
-                    classes="button",
-                    variant="success",
-                )
-
-            with Horizontal():
-                yield Button(
-                    "< Back",
-                    id="back_button",
-                    classes="back_button button",
-                    variant="primary",
-                )
-                yield Button(
-                    "Exit",
-                    id="exit_button",
-                    classes="exit_button button",
-                    variant="error",
-                )
-
-            yield Static()
-
-            self.log_window: Log = Log(
-                highlight=True, id="output_text_area", classes="log_window"
+        with Horizontal():
+            yield Button(
+                "< Back",
+                id="back_button",
+                classes="back_button button",
+                variant="primary",
             )
-            yield self.log_window
+            yield Button(
+                "Exit",
+                id="exit_button",
+                classes="exit_button button",
+                variant="error",
+            )
 
-    @on(Button.Pressed, "#server_button")
-    def server_button(self):
+        self.log_window: Log = Log(
+            highlight=True, id="output_text_area", classes="log_window"
+        )
+        yield self.log_window
+
+    @on(Button.Pressed, "#server_create_button")
+    def server_create_button(self):
         if self.generate_config():
             cmd = "sinara server create --verbose "
             for key, val in self.config_dict.items():
@@ -355,3 +366,26 @@ class ServerScreen(ModalScreen, ServerFunctions):
             self.jovyanRootPath_picker.disabled = False
         else:
             self.jovyanRootPath_picker.disabled = True
+
+    def action_create_server(self):
+        self.server_create_button()
+
+    def action_start_server(self):
+        self.server_start_button()
+
+    def action_stop_server(self):
+        self.server_stop_button()
+
+    def action_remove_server(self):
+        self.server_remove_button()
+
+    def action_load_config(self):
+        self.load_cfg_button()
+
+    def _on_mount(self, event: Mount) -> None:
+        first_node = self.config_tree.get_node_at_line(1)
+        if first_node is not None:
+            self.selected_config_path = first_node.data.path.as_posix()
+            self.config_tree.select_node(first_node)
+
+        return super()._on_mount(event)

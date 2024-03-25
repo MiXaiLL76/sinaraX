@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Iterable
 
 from sinaraml.server import SinaraServer
-from textual.widgets import Collapsible, DirectoryTree, RadioSet
+from textual.widgets import DirectoryTree, RadioSet
 
 
 class AppConfig(argparse.Namespace):
@@ -125,9 +125,6 @@ def load_from_file(screen, file):
 
 def generate_from_screen(screen):
     for child in screen.walk_children():
-        if type(child) is Collapsible:
-            child.collapsed = True
-
         if child.name is not None:
             if type(child) is RadioSet:
                 screen.config_dict[child.name] = child._selected

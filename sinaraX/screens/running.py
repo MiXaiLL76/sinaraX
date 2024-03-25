@@ -1,5 +1,6 @@
 from pathlib import Path
 
+import docker.errors as docker_errors
 from textual import on, work
 from textual.containers import Horizontal, ScrollableContainer
 from textual.screen import ModalScreen
@@ -100,10 +101,14 @@ class RunningScreen(ModalScreen, BaseFunctions):
     def select_server(self, row):
         instanceName = row[1]
         port = row[2]
-        server_url = get_instanse_token(instanceName, port)
-        out_string = f"{instanceName} running on: {server_url}\n"
-        self.log_window.write_line(out_string)
-        self.log_window.write_line("-----")
+        try:
+            server_url = get_instanse_token(instanceName, port)
+            out_string = f"{instanceName} running on: {server_url}\n"
+            self.log_window.write_line(out_string)
+            self.log_window.write_line("-----")
+        except docker_errors.APIError:
+            self.log_window.write_line("server not running")
+            self.log_window.write_line("-----")
 
     @on(DataTable.RowSelected)
     def on_row_selected(self, event: DataTable.RowSelected):
