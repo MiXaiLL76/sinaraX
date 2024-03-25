@@ -3,7 +3,7 @@ from pathlib import Path
 from textual import on
 from textual.containers import Horizontal, ScrollableContainer
 from textual.screen import ModalScreen
-from textual.widgets import Button, Label, Log
+from textual.widgets import Button, Footer, Label, Log
 
 from .server_cfg import BaseFunctions
 
@@ -13,8 +13,13 @@ class UpdateScreen(ModalScreen, BaseFunctions):
 
     BINDINGS = [
         ("escape", "app.pop_screen", "Back to main."),
-        ("ctrl+s", "save_screen", "Save screenshot"),
+        ("ctrl+s", "save_screen"),
+        ("u", "update_all", "Update ALL"),
+        ("s", ""),
     ]
+
+    def action_update_all(self):
+        self.cmd("pip install sinaraml sinaraX --upgrade")
 
     def action_save_screen(self):
         image_folder = Path("./images/")
@@ -22,6 +27,7 @@ class UpdateScreen(ModalScreen, BaseFunctions):
         self.app.save_screenshot(image_folder.joinpath("update.svg"))
 
     def compose(self):
+        yield Footer()
         with ScrollableContainer():
             yield Label("Update dependencies")
 

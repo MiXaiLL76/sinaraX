@@ -1,5 +1,6 @@
 from pathlib import Path
 
+import docker.errors as docker_errors
 from textual import on, work
 from textual.containers import Horizontal, ScrollableContainer
 from textual.screen import ModalScreen
@@ -42,6 +43,13 @@ class RunningScreen(ModalScreen, BaseFunctions):
                     disabled=True,
                 )
                 yield self.sudo_button
+                self.data_button = Button(
+                    "remove data & tmp",
+                    id="remove_data_button",
+                    classes="button",
+                    disabled=True,
+                )
+                yield self.data_button
 
             yield Button(
                 "Refresh servers",
@@ -93,16 +101,21 @@ class RunningScreen(ModalScreen, BaseFunctions):
     def select_server(self, row):
         instanceName = row[1]
         port = row[2]
-        server_url = get_instanse_token(instanceName, port)
-        out_string = f"{instanceName} running on: {server_url}\n"
-        self.log_window.write_line(out_string)
-        self.log_window.write_line("-----")
+        try:
+            server_url = get_instanse_token(instanceName, port)
+            out_string = f"{instanceName} running on: {server_url}\n"
+            self.log_window.write_line(out_string)
+            self.log_window.write_line("-----")
+        except docker_errors.APIError:
+            self.log_window.write_line("server not running")
+            self.log_window.write_line("-----")
 
     @on(DataTable.RowSelected)
     def on_row_selected(self, event: DataTable.RowSelected):
         row = event.data_table.get_row_at(event.cursor_row)
         self.select_server(row)
         self.sudo_button.disabled = False
+        self.data_button.disabled = False
         self.selected_uid = row[0]
 
     @work(thread=True)
@@ -134,6 +147,35 @@ class RunningScreen(ModalScreen, BaseFunctions):
     def install_sudo_button(self):
         if self.selected_uid is not None:
             self.install_sudo(self.selected_uid)
+
+    @work(thread=True)
+    def _remove_data(self, uid):
+        exec_cmd = "docker exec -it -u root {uid} bash -c '{cmd}'"
+        cmds = [
+            "rm -rf /data/*",
+            "rm -rf /tmp/*",
+        ]
+        self.log_window.loading = True
+        stop = False
+        for sub_cmd in cmds:
+            for lines in decode_lines(exec_cmd.format(cmd=sub_cmd, uid=uid)):
+                if len(lines) > 0:
+                    self.write_log_lines(lines)
+                    if "failed" in lines[-1]:
+                        stop = True
+            if stop:
+                break
+
+        self.log_window.loading = False
+        if not stop:
+            self.write_log_lines(
+                [f"/data/* and /tmp/* removed for {uid} done [True]!"]
+            )
+
+    @on(Button.Pressed, "#remove_data_button")
+    def remove_data_button(self):
+        if self.selected_uid is not None:
+            self._remove_data(self.selected_uid)
 
     @on(Button.Pressed, "#back_button")
     def back_button(self):

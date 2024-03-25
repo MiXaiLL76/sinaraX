@@ -70,6 +70,7 @@ class ServerFunctions(BaseFunctions):
         if selected_file.is_file():
             os.remove(selected_file.as_posix())
             self.log_window.write_line(f"Config {selected_file} removed!")
+
         self.reload_config_dir()
 
     def load_cfg_button(self):
@@ -79,6 +80,8 @@ class ServerFunctions(BaseFunctions):
             self.log_window.write_line(f"[True] Config {selected_file} loaded!")
         else:
             self.log_window.write_line("[False] Config not selected!")
+            self.notify("Config not selected!", severity="error")
+
         self.reload_config_dir()
 
     def get_cfg_button(self):

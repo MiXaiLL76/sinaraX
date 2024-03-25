@@ -5,7 +5,7 @@ from textual import on, work
 from textual.app import App
 from textual.containers import Horizontal
 from textual.events import Event
-from textual.widgets import Button, Label, Log, Static
+from textual.widgets import Button, Footer, Label, Log, Static
 
 try:
     from sinaraX._version import __version__ as sinaraX_version
@@ -37,8 +37,16 @@ class SinaraX(App, BaseFunctions):
 
     BINDINGS = [
         ("escape", "exit", "Exit"),
-        ("ctrl+s", "save_screen", "Save screenshot"),
+        ("s", "server", "Server"),
+        ("u", "update", "Update"),
+        ("ctrl+s", "save_screen"),
     ]
+
+    def action_server(self):
+        self.server_screen_start()
+
+    def action_update(self):
+        self.update_screen_start()
 
     def action_exit(self):
         self.exit()
@@ -49,6 +57,7 @@ class SinaraX(App, BaseFunctions):
         self.save_screenshot(image_folder.joinpath("main.svg"))
 
     def compose(self):
+        yield Footer()
         yield Label(
             f"SinaraX by MiXaiLL76; sinaraml=={sinaraml_version};"
             f" sinaraX=={sinaraX_version}"
@@ -63,7 +72,7 @@ class SinaraX(App, BaseFunctions):
             )
 
             yield Button(
-                "UPDATE",
+                "UPDATE [u]",
                 id="update_screen_start",
                 classes="button",
                 variant="primary",

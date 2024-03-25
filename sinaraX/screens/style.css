@@ -18,14 +18,15 @@ Label {
 .button {
     margin: 0 1 1 0;
     padding: 0;
+    min-width: 17;
     border: none;
 }
 
 .log_window {
     height: auto;
-    min-height: 15;
+    min-height: 5;
     max-height: 30;
-    width: 100%;
+    width: 90%;
 }
 
 #ready_configs {
