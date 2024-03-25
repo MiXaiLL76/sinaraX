@@ -21,7 +21,7 @@ packages = [{ include = "sinaraX" }]
 
 [tool.poetry.dependencies]
 python = "^3.8"
-textual = { version = "*" }
+textual = { version = ">=0.52.0" }
 requests = { version = "*" }
 sinaraml = { version = ">=2024.3.12" }
 
