@@ -49,18 +49,23 @@ class ServerScreen(ModalScreen, ServerFunctions):
                                 name="instanceName",
                             )
 
+                        sinara_mem = (
+                            SinaraServer.get_memory_size_limit()
+                            // 1024
+                            // 1024
+                            // 1024
+                        )
+                        base_shm_size = sinara_mem // 6
+                        if base_shm_size < 1:
+                            base_shm_size = 1
+
                         with Collapsible(title="Memory"):
                             yield Static(
                                 "Maximum amount of memory for server container"
                                 " (GB)"
                             )
                             yield Input(
-                                value=str(
-                                    SinaraServer.get_memory_size_limit()
-                                    // 1024
-                                    // 1024
-                                    // 1024
-                                ),
+                                value=str(sinara_mem),
                                 type="number",
                                 name="memLimit",
                             )
@@ -69,7 +74,10 @@ class ServerScreen(ModalScreen, ServerFunctions):
                                 "Maximum amount of shared memory for"
                                 " server container"
                             )
-                            yield Input(value="512m", name="shm_size")
+                            yield Input(
+                                value=str(base_shm_size) + "g",
+                                name="shm_size",
+                            )
 
                         with Collapsible(title="Cpu"):
                             yield Static(

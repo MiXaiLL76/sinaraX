@@ -17,7 +17,7 @@ class FilteredDirectoryTree(DirectoryTree):
         ]
 
 
-class FileTreeScreen(ModalScreen[str | None]):
+class FileTreeScreen(ModalScreen[str]):
     DEFAULT_CSS = """
     """
 
