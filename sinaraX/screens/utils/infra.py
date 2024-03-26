@@ -132,9 +132,18 @@ def get_sinara_servers():
 
 def get_instanse_token(instanceName, host_port):
     url = SinaraServer.get_server_url(instanceName)
-    token = SinaraServer.get_server_token(url)
+
+    try:
+        token = SinaraServer.get_server_token(url)
+    except TypeError:
+        token = None
+
     token_str = f"?token={token}" if token else ""
-    protocol = SinaraServer.get_server_protocol(url)
+
+    try:
+        protocol = SinaraServer.get_server_protocol(url)
+    except TypeError:
+        protocol = "http"
 
     platform = SinaraServer.get_server_platform(instanceName)
     server_ip = SinaraServer.get_server_ip(platform)

@@ -34,7 +34,9 @@ class RunningScreen(ModalScreen, BaseFunctions):
 
             yield Static()
 
-            with Collapsible(title="not supported by sinaraml"):
+            with Collapsible(
+                title="not supported by sinaraml", collapsed=False
+            ):
                 yield Static("Select server in click!")
                 self.sudo_button = Button(
                     "install sudo",
@@ -107,7 +109,7 @@ class RunningScreen(ModalScreen, BaseFunctions):
             self.log_window.write_line(out_string)
             self.log_window.write_line("-----")
         except docker_errors.APIError:
-            self.log_window.write_line("server not running")
+            self.log_window.write_line("Server not running")
             self.log_window.write_line("-----")
 
     @on(DataTable.RowSelected)
