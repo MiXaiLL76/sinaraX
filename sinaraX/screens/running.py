@@ -4,7 +4,15 @@ import docker.errors as docker_errors
 from textual import on, work
 from textual.containers import Horizontal, ScrollableContainer
 from textual.screen import ModalScreen
-from textual.widgets import Button, Collapsible, DataTable, Label, Log, Static
+from textual.widgets import (
+    Button,
+    Collapsible,
+    DataTable,
+    Footer,
+    Label,
+    Log,
+    Static,
+)
 
 from .server_cfg import BaseFunctions
 from .utils.infra import get_instanse_token, get_sinara_servers
@@ -17,6 +25,9 @@ class RunningScreen(ModalScreen, BaseFunctions):
     BINDINGS = [
         ("escape", "app.pop_screen", "Back to main."),
         ("ctrl+s", "save_screen", "Save screenshot"),
+        ("f6", "copy_logs", "Copy log to clipboard"),
+        ("u", ""),
+        ("s", ""),
     ]
 
     def action_save_screen(self):
@@ -26,7 +37,7 @@ class RunningScreen(ModalScreen, BaseFunctions):
 
     def compose(self):
         self.selected_uid = None
-
+        yield Footer()
         with ScrollableContainer():
             yield Label("Running servers:")
             yield Static("Click on server for inspect server url.")
@@ -34,7 +45,9 @@ class RunningScreen(ModalScreen, BaseFunctions):
 
             yield Static()
 
-            with Collapsible(title="not supported by sinaraml"):
+            with Collapsible(
+                title="not supported by sinaraml", collapsed=False
+            ):
                 yield Static("Select server in click!")
                 self.sudo_button = Button(
                     "install sudo",
@@ -107,7 +120,7 @@ class RunningScreen(ModalScreen, BaseFunctions):
             self.log_window.write_line(out_string)
             self.log_window.write_line("-----")
         except docker_errors.APIError:
-            self.log_window.write_line("server not running")
+            self.log_window.write_line("Server not running")
             self.log_window.write_line("-----")
 
     @on(DataTable.RowSelected)

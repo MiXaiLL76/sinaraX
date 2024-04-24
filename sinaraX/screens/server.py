@@ -1,6 +1,5 @@
 from pathlib import Path
 
-from sinaraml.server import SinaraServer
 from textual import on
 from textual.containers import Horizontal, Vertical
 from textual.events import Mount
@@ -21,7 +20,11 @@ from textual.widgets import (
 
 from .file_screen import FilePickButton
 from .server_cfg import ServerFunctions
-from .utils import FilteredConfigTree
+from .utils import (
+    FilteredConfigTree,
+    get_cpu_cores_limit,
+    get_memory_size_limit,
+)
 
 
 class ServerScreen(ModalScreen, ServerFunctions):
@@ -36,6 +39,7 @@ class ServerScreen(ModalScreen, ServerFunctions):
         ("f3", "start_server", "Start"),
         ("f4", "stop_server", "Stop"),
         ("f5", "stop_remove", "Remove"),
+        ("f6", "copy_logs", "Copy log to clipboard"),
         ("u", ""),
         ("s", ""),
     ]
@@ -126,7 +130,7 @@ class ServerScreen(ModalScreen, ServerFunctions):
                             collapsed=False,
                         ):
                             yield Input(
-                                value=SinaraServer.container_name,
+                                value="jovyan-single-use",
                                 name="instanceName",
                             )
 
@@ -150,10 +154,7 @@ class ServerScreen(ModalScreen, ServerFunctions):
 
                     with TabPane("Resource", id="resource"):
                         sinara_mem = (
-                            SinaraServer.get_memory_size_limit()
-                            // 1024
-                            // 1024
-                            // 1024
+                            get_memory_size_limit() // 1024 // 1024 // 1024
                         )
                         base_shm_size = sinara_mem // 6
                         if base_shm_size < 1:
@@ -185,7 +186,7 @@ class ServerScreen(ModalScreen, ServerFunctions):
                                 " server container"
                             )
                             yield Input(
-                                value=str(SinaraServer.get_cpu_cores_limit()),
+                                value=str(get_cpu_cores_limit()),
                                 type="number",
                                 name="cpuLimit",
                             )

@@ -40,6 +40,7 @@ class SinaraX(App, BaseFunctions):
         ("s", "server", "Server"),
         ("u", "update", "Update"),
         ("ctrl+s", "save_screen"),
+        ("f6", "copy_logs", "Copy log to clipboard"),
     ]
 
     def action_server(self):

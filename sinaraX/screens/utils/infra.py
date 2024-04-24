@@ -2,9 +2,9 @@ import getpass
 import importlib.metadata
 import json
 import platform
+import re
 
 import requests
-from sinaraml.server import SinaraServer
 
 from .process import start_cmd
 
@@ -130,42 +130,78 @@ def get_sinara_servers():
     return [label_row] + rows
 
 
-def get_instanse_token(instanceName, host_port):
-    url = SinaraServer.get_server_url(instanceName)
-    token = SinaraServer.get_server_token(url)
-    token_str = f"?token={token}" if token else ""
-    protocol = SinaraServer.get_server_protocol(url)
+def get_server_url(instance):
+    url = None
+    commands = [
+        "jupyter lab list",
+        "jupyter server list",
+        "jupyter notebook list",
+    ]
+    for cmd in commands:
+        if url:
+            continue
 
-    platform = SinaraServer.get_server_platform(instanceName)
-    server_ip = SinaraServer.get_server_ip(platform)
+        for line in start_cmd(f"docker exec {instance} {cmd}"):
+            if url:
+                continue
+
+            if any(x in line for x in ["http://", "https://"]):
+                m = re.search(r"(http[^\s]+)", line)
+                url = m.group(1) if m else None
+
+    return url
+
+
+def get_server_token(server_url):
+    m = re.search(r"token=([a-f0-9-][^\s]+)", server_url)
+    return m.group(1) if m else None
+
+
+def get_server_protocol(server_url):
+    m = re.search(r"^(http:|https:)", server_url)
+    return str(m.group(1))[:-1] if m else None
+
+
+def get_instanse_token(instanceName, host_port):
+    url = get_server_url(instanceName)
+
+    try:
+        token = get_server_token(url)
+    except TypeError:
+        token = None
+
+    token_str = f"?token={token}" if token else ""
+
+    try:
+        protocol = get_server_protocol(url)
+    except TypeError:
+        protocol = "http"
+
+    server_ip = "localhost"
     server_url = f"{protocol}://{server_ip}:{host_port}/{token_str}"
     return server_url
 
 
 def check_last_version(name: str):
     try:
-        local_version = (name + "-" + importlib.metadata.version(name)).lower()
+        local_version = str(importlib.metadata.version(name)).lower()
 
-        url = f"https://pypi.org/simple/{name}/"
+        url = f"https://pypi.org/pypi/{name}/json"
         resp = requests.get(url)
         if resp.status_code == 200:
-            text = resp.text.lower()
-            lines = text.split("\n")
-            lines = [line for line in lines if ".tar.gz" in line]
-            version_idx = -1
-            for idx, line in enumerate(lines):
-                start_idx = line.find(">") + 1
-                if start_idx == -1:
-                    continue
+            package_data = resp.json()
 
-                end_idx = line.find(".tar.gz", start_idx)
+            last_version = (
+                package_data.get("info", {})
+                .get("version", "not found!")
+                .lower()
+            )
 
-                lines[idx] = line[start_idx:end_idx].lower()
-                if local_version == lines[idx]:
-                    version_idx = idx
-
-            if version_idx < idx:
-                return False, f"Available new! [{lines[idx]}]"
+            if last_version != local_version:
+                return (
+                    False,
+                    f"Available new! [{local_version}] < [{last_version}]",
+                )
         else:
             return False, "Pypi not available from this env!"
     except UnboundLocalError:

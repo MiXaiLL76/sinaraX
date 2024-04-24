@@ -1,5 +1,5 @@
 # SinaraX is a TUI for the [sinaraml](https://github.com/4-DS/sinaraml) library
-[![license](https://img.shields.io/github/license/open-mmlab/mmdetection.svg)](https://github.com/open-mmlab/mmdetection/blob/main/LICENSE)
+[![license](https://img.shields.io/github/license/MiXaiLL76/sinaraX.svg)](https://github.com/MiXaiLL76/sinaraX/blob/main/LICENSE)
 
 | lib      | pypy                                                                                     |
 | -------- | ---------------------------------------------------------------------------------------- |

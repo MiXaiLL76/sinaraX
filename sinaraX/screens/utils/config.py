@@ -3,8 +3,9 @@ import json
 from pathlib import Path
 from typing import Iterable
 
-from sinaraml.server import SinaraServer
 from textual.widgets import DirectoryTree, RadioSet
+
+from .sinara_server_utils import get_memory_size_limit
 
 
 class AppConfig(argparse.Namespace):
@@ -56,7 +57,7 @@ def remap_config(_dict: dict, _from_screen=True):
             elif "m" in memLimit:
                 memLimit = float(memLimit.replace("m", "")) / 1024
             elif type(_dict["memLimit"]) is int:
-                max_mem = SinaraServer.get_memory_size_limit()
+                max_mem = get_memory_size_limit()
                 if int(memLimit) > max_mem:
                     memLimit = max_mem
 
