@@ -13,6 +13,9 @@ from .utils import (
 
 
 class BaseFunctions:
+    def action_copy_logs(self):
+        self.app.copy_to_clipboard("\n".join(self.log_window.lines))
+
     def write_log_lines(self, lines):
         self.log_window.clear()
 

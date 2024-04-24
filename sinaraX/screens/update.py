@@ -16,6 +16,7 @@ class UpdateScreen(ModalScreen, BaseFunctions):
         ("ctrl+s", "save_screen"),
         ("u", "update_all", "Update ALL"),
         ("s", ""),
+        ("f6", "copy_logs", "Copy log to clipboard"),
     ]
 
     def action_update_all(self):

@@ -17,6 +17,7 @@ class RunningScreen(ModalScreen, BaseFunctions):
     BINDINGS = [
         ("escape", "app.pop_screen", "Back to main."),
         ("ctrl+s", "save_screen", "Save screenshot"),
+        ("f6", "copy_logs", "Copy log to clipboard"),
     ]
 
     def action_save_screen(self):
