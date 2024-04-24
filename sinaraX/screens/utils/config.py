@@ -119,7 +119,7 @@ def load_from_file(screen, file):
         if config.get(child.name) is not None:
             if type(child) is RadioSet:
                 child._selected = config[child.name]
-                child.action_toggle()
+                child.action_toggle_button()
             else:
                 child.value = config[child.name]
 
