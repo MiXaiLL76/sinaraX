@@ -4,7 +4,6 @@ from sinaraml._version import __version__ as sinaraml_version
 from textual import on, work
 from textual.app import App
 from textual.containers import Horizontal
-from textual.events import Event
 from textual.widgets import Button, Footer, Label, Log, Static
 
 try:
@@ -209,6 +208,6 @@ class SinaraX(App, BaseFunctions):
     def exit_button(self):
         self.exit()
 
-    def on_event(self, event: Event):
-        self.app.refresh(layout=True)
-        return super().on_event(event)
+    # def on_event(self, event: Event):
+    #     # self.app.refresh(layout=True)
+    #     return super().on_event(event)

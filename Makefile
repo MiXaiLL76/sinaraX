@@ -4,7 +4,7 @@ wheel:
 sdist:
 	pipx run build --sdist .
 
-FORMAT_DIRS = ./sinaraX
+FORMAT_DIRS = ./sinaraX ./tests
 LINE_LENGTH = 80
 BLACK_CONFIG = --preview --enable-unstable-feature string_processing
 
@@ -21,6 +21,11 @@ linter:
 clean:
 	rm -rf build dist *.egg-info sinaraX/*.egg-info
 	pip3 uninstall sinaraX -y
+
+tests:
+	pip3 install -e .
+	python3 tests/test_server.py
+	pip3 uninstall sinaraX
 
 install: sdist
 	pip3 install dist/*
