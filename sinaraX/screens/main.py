@@ -209,6 +209,6 @@ class SinaraX(App, BaseFunctions):
     def exit_button(self):
         self.exit()
 
-    def on_event(self, event: Event):
-        self.app.refresh(layout=True)
-        return super().on_event(event)
+    # def on_event(self, event: Event):
+    #     # self.app.refresh(layout=True)
+    #     return super().on_event(event)

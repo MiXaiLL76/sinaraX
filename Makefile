@@ -22,5 +22,10 @@ clean:
 	rm -rf build dist *.egg-info sinaraX/*.egg-info
 	pip3 uninstall sinaraX -y
 
+tests:
+	pip3 install -e .
+	python3 tests/test_server.py
+	pip3 uninstall sinaraX
+
 install: sdist
 	pip3 install dist/*
