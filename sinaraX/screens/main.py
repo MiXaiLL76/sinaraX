@@ -4,7 +4,6 @@ from sinaraml._version import __version__ as sinaraml_version
 from textual import on, work
 from textual.app import App
 from textual.containers import Horizontal
-from textual.events import Event
 from textual.widgets import Button, Footer, Label, Log, Static
 
 try:
