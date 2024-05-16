@@ -137,12 +137,18 @@ class ServerScreen(ModalScreen, ServerFunctions):
                         with Horizontal():
                             with Vertical():
                                 with Collapsible(
-                                    title="Host where the server is run",
+                                    title=(
+                                        "Host where the server is run"
+                                        " (disabled!)"
+                                    ),
                                     collapsed=False,
                                 ):
-                                    with RadioSet(name="platform"):
+                                    with RadioSet(
+                                        name="platform",
+                                        disabled=True,
+                                    ):
                                         yield RadioButton("Desktop", value=True)
-                                        yield RadioButton("Remote VM")
+                                        yield RadioButton("Remote")
 
                             with Vertical():
                                 with Collapsible(
@@ -251,9 +257,7 @@ class ServerScreen(ModalScreen, ServerFunctions):
                 variant="error",
             )
 
-        self.log_window: Log = Log(
-            highlight=True, id="output_text_area", classes="log_window"
-        )
+        self.log_window: Log = Log(highlight=True, classes="log_window")
         yield self.log_window
 
     @on(Button.Pressed, "#server_create_button")
