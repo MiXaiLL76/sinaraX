@@ -15,7 +15,6 @@ from .running import RunningScreen
 from .server import ServerScreen
 from .server_cfg import BaseFunctions
 from .update import UpdateScreen
-from .utils.config import AppConfig
 from .utils.infra import (
     check_docker,
     check_docker_group,
@@ -27,7 +26,6 @@ from .utils.infra import (
 class SinaraX(App, BaseFunctions):
     CSS_PATH = "style.css"
     system_info_data = None
-    config = AppConfig()
     SCREENS = {
         "server_screen": ServerScreen(),
         "update_screen": UpdateScreen(),

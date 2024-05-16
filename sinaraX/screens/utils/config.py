@@ -1,4 +1,4 @@
-import argparse
+import enum
 import json
 from pathlib import Path
 from typing import Iterable
@@ -8,8 +8,19 @@ from textual.widgets import DirectoryTree, RadioSet
 from .sinara_server_utils import get_memory_size_limit
 
 
-class AppConfig(argparse.Namespace):
-    pass
+class SinaraImageType(enum.Enum):
+    CV = 0
+    ML = 1
+
+
+class SinaraRunMode(enum.Enum):
+    Quick = 0
+    Basic = 1
+
+
+class SinaraPlatform(enum.Enum):
+    Desktop = 0
+    Remote = 1
 
 
 class FilteredConfigTree(DirectoryTree):
@@ -33,9 +44,18 @@ def remap_checkbox(_dict: dict, key: str, remap_dict: dict):
 
 def remap_config(_dict: dict, _from_screen=True):
     _remap_radio = {
-        "runMode": {0: "q", 1: "b"},
-        "sinara_image_num": {0: "2", 1: "1"},
-        "platform": {0: "desktop", 1: "remote_vm"},
+        "runMode": {
+            SinaraRunMode.Quick.value: "q",
+            SinaraRunMode.Basic.value: "b",
+        },
+        "sinara_image_num": {
+            SinaraImageType.CV.value: "2",
+            SinaraImageType.ML.value: "1",
+        },
+        "platform": {
+            SinaraPlatform.Desktop.value: "desktop",
+            SinaraPlatform.Remote.value: "remote",
+        },
     }
 
     _remap_checkbox = {
@@ -104,9 +124,9 @@ def remap_config(_dict: dict, _from_screen=True):
                 _dict["experimental"] = True
 
             if "cv" in image:
-                _dict["sinara_image_num"] = 0
+                _dict["sinara_image_num"] = SinaraImageType.CV.value
             else:
-                _dict["sinara_image_num"] = 1
+                _dict["sinara_image_num"] = SinaraImageType.ML.value
 
 
 def load_from_file(screen, file):
@@ -114,6 +134,11 @@ def load_from_file(screen, file):
         config = json.load(fd)
 
     remap_config(config, False)
+
+    # disabled
+    for key in ["platform", "createFolders"]:
+        if key in config:
+            del config[key]
 
     for child in screen.walk_children():
         if config.get(child.name) is not None:
