@@ -1,7 +1,6 @@
 from .config import (
     FilteredConfigTree,
     SinaraImageType,
-    SinaraPlatform,
     SinaraRunMode,
     generate_from_screen,
     load_from_file,
@@ -21,7 +20,6 @@ __all__ = [
     "decode_lines",
     "SinaraImageType",
     "SinaraRunMode",
-    "SinaraPlatform",
     "FilteredConfigTree",
     "get_cpu_cores_limit",
     "get_system_memory_size",

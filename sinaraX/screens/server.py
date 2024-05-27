@@ -137,21 +137,6 @@ class ServerScreen(ModalScreen, ServerFunctions):
                         with Horizontal():
                             with Vertical():
                                 with Collapsible(
-                                    title=(
-                                        "Host where the server is run"
-                                        " (disabled!)"
-                                    ),
-                                    collapsed=False,
-                                ):
-                                    with RadioSet(
-                                        name="platform",
-                                        disabled=True,
-                                    ):
-                                        yield RadioButton("Desktop", value=True)
-                                        yield RadioButton("Remote")
-
-                            with Vertical():
-                                with Collapsible(
                                     title="Sinara image for", collapsed=False
                                 ):
                                     with RadioSet(name="sinara_image_num"):
@@ -181,9 +166,10 @@ class ServerScreen(ModalScreen, ServerFunctions):
                                 "Maximum amount of shared memory for"
                                 " server container"
                             )
+                            # shm_size -> shmSize 27.05.2024
                             yield Input(
                                 value=str(base_shm_size) + "g",
-                                name="shm_size",
+                                name="shmSize",
                             )
 
                         with Collapsible(title="Cpu", collapsed=False):
@@ -201,12 +187,6 @@ class ServerScreen(ModalScreen, ServerFunctions):
                         with Collapsible(
                             title="Server config", collapsed=False
                         ):
-                            yield Checkbox(
-                                "Create Folders (disabled!)",
-                                value=True,
-                                name="createFolders",
-                                disabled=True,
-                            )
                             yield Checkbox(
                                 "Gpu Enabled", value=True, name="gpuEnabled"
                             )

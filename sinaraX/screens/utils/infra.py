@@ -9,6 +9,20 @@ import requests
 from .process import start_cmd
 
 
+def update_sinara_org():
+    cmd = "sinara org update"
+    failed = False
+    lines = []
+    for line in start_cmd(cmd):
+        lines.append(line)
+        if "failed" in line:
+            failed = True
+
+        if "docker: not found" in line:
+            failed = True
+    return lines, failed
+
+
 def check_docker():
     check_docker_cmd = "docker info -f json"
     lines = []
