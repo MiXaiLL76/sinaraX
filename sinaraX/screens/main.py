@@ -20,6 +20,7 @@ from .utils.infra import (
     check_docker_group,
     check_last_version,
     check_platform,
+    update_sinara_org,
 )
 
 
@@ -106,6 +107,10 @@ class SinaraX(App, BaseFunctions):
 
         if self.system_info_data is None:
             self.get_system_info()
+
+    @work(thread=True)
+    def update_sinara_org(self):
+        update_sinara_org()
 
     @work(thread=True)
     def get_system_info(self):

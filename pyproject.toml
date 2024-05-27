@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "sinaraX"
-version = "1.1.8"
+version = "1.1.9"
 readme = "README.md"
 authors = ["MiXaiLL76 <mike.milos@yandex.ru>"]
 description = "sinaraX - TUI for sinaraml clin"
@@ -23,7 +23,7 @@ packages = [{ include = "sinaraX" }]
 python = "^3.8"
 textual = { version = ">=0.57.1" }
 requests = { version = "*" }
-sinaraml = { version = ">=2024.3.12" }
+sinaraml = { version = ">=2024.4.23" }
 
 [build-system]
 requires = ["poetry-core"]

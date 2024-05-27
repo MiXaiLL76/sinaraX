@@ -18,11 +18,6 @@ class SinaraRunMode(enum.Enum):
     Basic = 1
 
 
-class SinaraPlatform(enum.Enum):
-    Desktop = 0
-    Remote = 1
-
-
 class FilteredConfigTree(DirectoryTree):
     def filter_paths(self, paths: Iterable[Path]) -> Iterable[Path]:
         return [
@@ -52,14 +47,9 @@ def remap_config(_dict: dict, _from_screen=True):
             SinaraImageType.CV.value: "2",
             SinaraImageType.ML.value: "1",
         },
-        "platform": {
-            SinaraPlatform.Desktop.value: "desktop",
-            SinaraPlatform.Remote.value: "remote",
-        },
     }
 
     _remap_checkbox = {
-        "createFolders": {True: "y", False: "n"},
         "gpuEnabled": {True: "y", False: "n"},
         "experimental": {True: " ", False: None},
         "insecure": {True: " ", False: None},
@@ -115,7 +105,7 @@ def remap_config(_dict: dict, _from_screen=True):
             int(_dict.get("sinara_image_num")) - 1
         ]
         _dict["image"] = image
-        _dict["project"] = "cv" if "cv" in image else "ml"
+        _dict["serverType"] = "cv" if "cv" in image else "ml"
         del _dict["sinara_image_num"]
     else:
         image = _dict.get("image")
@@ -134,11 +124,6 @@ def load_from_file(screen, file):
         config = json.load(fd)
 
     remap_config(config, False)
-
-    # disabled
-    for key in ["platform", "createFolders"]:
-        if key in config:
-            del config[key]
 
     for child in screen.walk_children():
         if config.get(child.name) is not None:

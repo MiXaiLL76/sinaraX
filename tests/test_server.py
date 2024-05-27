@@ -9,12 +9,7 @@ from textual.worker import Worker, WorkerState
 
 from sinaraX.screens.main import SinaraX
 from sinaraX.screens.server import ServerScreen
-from sinaraX.screens.utils import (
-    SinaraImageType,
-    SinaraPlatform,
-    SinaraRunMode,
-    start_cmd,
-)
+from sinaraX.screens.utils import SinaraImageType, SinaraRunMode, start_cmd
 
 logging.basicConfig(level=logging.WARNING)
 
@@ -25,7 +20,6 @@ async def open_server_screen(
     jovyanRootPath: str,
     sinara_image_num: SinaraImageType,
     runMode: SinaraRunMode,
-    platform: SinaraPlatform,
 ) -> ServerScreen:
     if type(pilot.app.screen) is ServerScreen:
         return
@@ -51,10 +45,6 @@ async def open_server_screen(
             child._selected = runMode.value
             child.action_toggle_button()
 
-        if child.name == "platform":
-            child._selected = platform.value
-            child.action_toggle_button()
-
     assert server_screen.generate_config()
     assert "instanceName" in server_screen.config_dict
     assert server_screen.config_dict["instanceName"] == instanceName
@@ -67,6 +57,7 @@ async def get_non_loader_worker(pilot) -> list[Worker]:
         if worker.name != "_loader":
             if worker.state == WorkerState.RUNNING:
                 workers.append(worker)
+    logging.debug(f"{workers=}")
     return workers
 
 
@@ -129,15 +120,14 @@ class SinaraX_Server_Test_Quick(unittest.IsolatedAsyncioTestCase):
 
     @parameterized.expand(
         [
-            [SinaraImageType.CV, SinaraRunMode.Quick, SinaraPlatform.Desktop],
-            [SinaraImageType.CV, SinaraRunMode.Basic, SinaraPlatform.Desktop],
+            [SinaraImageType.CV, SinaraRunMode.Quick],
+            [SinaraImageType.CV, SinaraRunMode.Basic],
         ]
     )
     async def test_server(
         self,
         sinara_image_num: SinaraImageType,
         runMode: SinaraRunMode,
-        platform: SinaraPlatform,
     ):
         async with SinaraX().run_test() as pilot:
             server_screen = await open_server_screen(
@@ -146,7 +136,6 @@ class SinaraX_Server_Test_Quick(unittest.IsolatedAsyncioTestCase):
                 self.jovyanRootPath,
                 sinara_image_num,
                 runMode,
-                platform,
             )
 
             server_screen.server_stop_button()
