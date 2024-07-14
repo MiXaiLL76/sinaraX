@@ -32,6 +32,7 @@ class BaseFunctions:
 
     @work(thread=True)
     def cmd(self, cmd: str):
+        cmd = cmd.replace("'store_true'", "")
         self.write_log_lines([cmd + "\n"])
         for lines in decode_lines(cmd):
             self.write_log_lines([cmd + "\n"] + lines[1:])
