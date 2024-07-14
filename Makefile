@@ -24,7 +24,8 @@ clean:
 
 test:
 	pip3 install -e .
-	python3 tests/test_server.py
+	python3 tests/test_server_basic.py
+	python3 tests/test_server_quick.py
 	pip3 uninstall sinaraX -y
 
 install: sdist
