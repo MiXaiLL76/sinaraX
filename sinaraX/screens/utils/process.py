@@ -7,6 +7,10 @@ if "Windows" in platform.system():
 
 
 def start_cmd(cmd: str):
+    """
+    Start cmd and yield decoded lines
+    cmd: str
+    """
     with Popen(
         cmd,
         shell=True,
@@ -34,6 +38,10 @@ def start_cmd(cmd: str):
 
 
 def decode_lines(cmd):
+    """
+    Start cmd and yield decoded lines
+    cmd: str
+    """
     lines = [" "]
     for decoded_line in start_cmd(cmd):
         if len(decoded_line) > 0:

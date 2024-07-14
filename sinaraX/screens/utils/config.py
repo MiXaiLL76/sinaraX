@@ -51,8 +51,8 @@ def remap_config(_dict: dict, _from_screen=True):
 
     _remap_checkbox = {
         "gpuEnabled": {True: "y", False: "n"},
-        "experimental": {True: " ", False: None},
-        "insecure": {True: " ", False: None},
+        "experimental": {True: "store_true", False: None},
+        "insecure": {True: "store_true", False: None},
     }
 
     if _dict.get("memLimit"):

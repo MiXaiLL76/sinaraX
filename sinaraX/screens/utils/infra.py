@@ -10,6 +10,9 @@ from .process import start_cmd
 
 
 def update_sinara_org():
+    """
+    Update sinara org
+    """
     cmd = "sinara org update"
     failed = False
     lines = []
@@ -24,6 +27,9 @@ def update_sinara_org():
 
 
 def check_docker():
+    """
+    Check docker
+    """
     check_docker_cmd = "docker info -f json"
     lines = []
     failed = False
@@ -62,6 +68,9 @@ def check_docker():
 
 
 def check_platform():
+    """
+    Check platform
+    """
     _platform = platform.system()
     is_windows = "Windows" in _platform
     result = {
@@ -72,6 +81,9 @@ def check_platform():
 
 
 def check_docker_group():
+    """
+    Check docker group
+    """
     result = {
         "docker_group": False,
         "user_in_group": False,
@@ -97,6 +109,9 @@ def check_docker_group():
 
 
 def get_sinara_servers():
+    """
+    Get sinara servers
+    """
     docker_stats = check_docker()
     containers: list[dict] = []
     if docker_stats["ok"]:
