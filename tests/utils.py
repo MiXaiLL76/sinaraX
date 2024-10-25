@@ -74,9 +74,7 @@ def _get_docker_error(instanceName: str, status: str = None) -> bool:
         _status = f"--filter status={status}"
 
     result = True
-    for line in start_cmd(
-        f'docker ps -a --filter name="{instanceName}" {_status}'
-    ):
+    for line in start_cmd(f'docker ps -a --filter name="{instanceName}" {_status}'):
         if instanceName in line:
             result = "failed!" in line
     return not result
@@ -84,6 +82,4 @@ def _get_docker_error(instanceName: str, status: str = None) -> bool:
 
 async def get_docker_error(instanceName: str, status: str = None) -> bool:
     loop = asyncio.get_event_loop()
-    return await loop.run_in_executor(
-        None, _get_docker_error, instanceName, status
-    )
+    return await loop.run_in_executor(None, _get_docker_error, instanceName, status)

@@ -1,5 +1,0 @@
-sinaraX
-textual
-parameterized
-sinaraml
-requests

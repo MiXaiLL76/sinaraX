@@ -28,9 +28,9 @@ class SinaraX(App, BaseFunctions):
     CSS_PATH = "style.css"
     system_info_data = None
     SCREENS = {
-        "server_screen": ServerScreen(),
-        "update_screen": UpdateScreen(),
-        "running_screen": RunningScreen(),
+        "server_screen": ServerScreen,
+        "update_screen": UpdateScreen,
+        "running_screen": RunningScreen,
     }
 
     BINDINGS = [
@@ -127,13 +127,9 @@ class SinaraX(App, BaseFunctions):
         }
         lines = []
         if self.system_info_data["docker_info"]["ok"]:
-            docker_version = self.system_info_data["docker_info"][
-                "ServerVersion"
-            ]
+            docker_version = self.system_info_data["docker_info"]["ServerVersion"]
             lines.append(f"Docker is running : True ; {docker_version}")
-            for _docker_err in self.system_info_data["docker_info"][
-                "ServerErrors"
-            ]:
+            for _docker_err in self.system_info_data["docker_info"]["ServerErrors"]:
                 lines.append(_docker_err)
 
         else:
@@ -147,9 +143,7 @@ class SinaraX(App, BaseFunctions):
             docker_group = self.system_info_data["group_info"]["docker_group"]
             lines.append(f"Docker group created : {docker_group}")
             if not docker_group:
-                self.notify(
-                    "Docker group not created!", severity="warning", timeout=2
-                )
+                self.notify("Docker group not created!", severity="warning", timeout=2)
 
             user_in_group = self.system_info_data["group_info"]["user_in_group"]
             lines.append(f"{_USER} in group docker : {user_in_group}")

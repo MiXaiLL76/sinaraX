@@ -144,17 +144,14 @@ class ServerScreen(ModalScreen, ServerFunctions):
                                         yield RadioButton("ML")
 
                     with TabPane("Resource", id="resource"):
-                        sinara_mem = (
-                            get_memory_size_limit() // 1024 // 1024 // 1024
-                        )
+                        sinara_mem = get_memory_size_limit() // 1024 // 1024 // 1024
                         base_shm_size = sinara_mem // 6
                         if base_shm_size < 1:
                             base_shm_size = 1
 
                         with Collapsible(title="Memory", collapsed=False):
                             yield Static(
-                                "Maximum amount of memory for server container"
-                                " (GB)"
+                                "Maximum amount of memory for server container" " (GB)"
                             )
                             yield Input(
                                 value=str(sinara_mem),
@@ -174,8 +171,7 @@ class ServerScreen(ModalScreen, ServerFunctions):
 
                         with Collapsible(title="Cpu", collapsed=False):
                             yield Static(
-                                " Number of CPU cores to use for"
-                                " server container"
+                                " Number of CPU cores to use for" " server container"
                             )
                             yield Input(
                                 value=str(get_cpu_cores_limit()),
@@ -184,12 +180,8 @@ class ServerScreen(ModalScreen, ServerFunctions):
                             )
 
                     with TabPane("Extra", id="extra"):
-                        with Collapsible(
-                            title="Server config", collapsed=False
-                        ):
-                            yield Checkbox(
-                                "Gpu Enabled", value=True, name="gpuEnabled"
-                            )
+                        with Collapsible(title="Server config", collapsed=False):
+                            yield Checkbox("Gpu Enabled", value=True, name="gpuEnabled")
                             yield Checkbox(
                                 "Run server without password protection",
                                 value=False,
@@ -215,9 +207,7 @@ class ServerScreen(ModalScreen, ServerFunctions):
                                 yield RadioButton("Quick", value=True)
                                 yield RadioButton("Basic")
 
-                            yield Static(
-                                "Path to parent folder for data, work and tmp"
-                            )
+                            yield Static("Path to parent folder for data, work and tmp")
                             self.jovyanRootPath_picker = FilePickButton(
                                 name="jovyanRootPath", disabled=True
                             )
@@ -262,9 +252,7 @@ class ServerScreen(ModalScreen, ServerFunctions):
         result = self.generate_config()
         if result:
             if self.config_dict.get("instanceName"):
-                cmd += " --instanceName " + str(
-                    self.config_dict.get("instanceName")
-                )
+                cmd += " --instanceName " + str(self.config_dict.get("instanceName"))
 
         self.cmd(cmd)
 
@@ -274,9 +262,7 @@ class ServerScreen(ModalScreen, ServerFunctions):
         result = self.generate_config()
         if result:
             if self.config_dict.get("instanceName"):
-                cmd += " --instanceName " + str(
-                    self.config_dict.get("instanceName")
-                )
+                cmd += " --instanceName " + str(self.config_dict.get("instanceName"))
 
         self.cmd(cmd)
 
@@ -286,9 +272,7 @@ class ServerScreen(ModalScreen, ServerFunctions):
         result = self.generate_config()
         if result:
             if self.config_dict.get("instanceName"):
-                cmd += " --instanceName " + str(
-                    self.config_dict.get("instanceName")
-                )
+                cmd += " --instanceName " + str(self.config_dict.get("instanceName"))
 
         self.cmd(cmd)
 

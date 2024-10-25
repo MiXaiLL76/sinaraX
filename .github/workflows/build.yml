@@ -36,7 +36,7 @@ jobs:
         with:
           name: sdist
           path: dist
-      
+
       - name: Display structure of downloaded files
         run: ls -R dist
 
