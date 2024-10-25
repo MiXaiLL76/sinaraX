@@ -21,9 +21,7 @@ class SinaraRunMode(enum.Enum):
 class FilteredConfigTree(DirectoryTree):
     def filter_paths(self, paths: Iterable[Path]) -> Iterable[Path]:
         return [
-            path
-            for path in paths
-            if (path.is_file() and path.name.endswith(".json"))
+            path for path in paths if (path.is_file() and path.name.endswith(".json"))
         ]
 
 
@@ -57,9 +55,7 @@ def remap_config(_dict: dict, _from_screen=True):
 
     if _dict.get("memLimit"):
         if _from_screen:
-            _dict["memLimit"] = int(
-                float(_dict.get("memLimit")) * 1024 * 1024 * 1024
-            )
+            _dict["memLimit"] = int(float(_dict.get("memLimit")) * 1024 * 1024 * 1024)
         else:
             memLimit = str(_dict["memLimit"])
             if "g" in memLimit:
@@ -101,9 +97,7 @@ def remap_config(_dict: dict, _from_screen=True):
     ]
     if _from_screen:
         image_type_id = int(_dict.get("experimental") is not None)
-        image = sinara_images[image_type_id][
-            int(_dict.get("sinara_image_num")) - 1
-        ]
+        image = sinara_images[image_type_id][int(_dict.get("sinara_image_num")) - 1]
         _dict["image"] = image
         _dict["serverType"] = "cv" if "cv" in image else "ml"
         del _dict["sinara_image_num"]
@@ -147,9 +141,7 @@ def generate_from_screen(screen):
     try:
         if screen.config_dict.get("runMode", "") == "b":
             for _key in ["jovyanRootPath"]:
-                assert (
-                    len(screen.config_dict.get(_key, "")) > 0
-                ), f"{_key} empty!"
+                assert len(screen.config_dict.get(_key, "")) > 0, f"{_key} empty!"
     except AssertionError as e:
         screen.write_log_lines("No path specified for:\n" + str(e))
         return False

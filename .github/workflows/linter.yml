@@ -16,7 +16,7 @@ jobs:
           python-version: "3.x"
 
       - name: Install dependencies
-        run: pip3 install flake8==7.0.0 black==24.2.0 isort==5.13.2
+        run: pip3 install pre-commit==3.8.0
 
       - name: Lint with flake8
-        run: make linter
+        run: make format

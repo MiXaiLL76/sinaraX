@@ -45,9 +45,7 @@ class RunningScreen(ModalScreen, BaseFunctions):
 
             yield Static()
 
-            with Collapsible(
-                title="not supported by sinaraml", collapsed=False
-            ):
+            with Collapsible(title="not supported by sinaraml", collapsed=False):
                 yield Static("Select server in click!")
                 self.sudo_button = Button(
                     "install sudo",
@@ -181,9 +179,7 @@ class RunningScreen(ModalScreen, BaseFunctions):
 
         self.log_window.loading = False
         if not stop:
-            self.write_log_lines(
-                [f"/data/* and /tmp/* removed for {uid} done [True]!"]
-            )
+            self.write_log_lines([f"/data/* and /tmp/* removed for {uid} done [True]!"])
 
     @on(Button.Pressed, "#remove_data_button")
     def remove_data_button(self):

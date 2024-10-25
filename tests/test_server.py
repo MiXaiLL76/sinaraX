@@ -53,7 +53,7 @@ class SinaraX_Server_Test_Quick(unittest.IsolatedAsyncioTestCase):
 
     @parameterized.expand(
         [
-            # [SinaraImageType.CV, SinaraRunMode.Quick],
+            [SinaraImageType.CV, SinaraRunMode.Quick],
             [SinaraImageType.CV, SinaraRunMode.Basic],
         ]
     )
@@ -62,9 +62,6 @@ class SinaraX_Server_Test_Quick(unittest.IsolatedAsyncioTestCase):
         sinara_image_num: SinaraImageType,
         runMode: SinaraRunMode,
     ):
-
-        print("test_server", sinara_image_num, runMode)
-
         async with SinaraX().run_test() as pilot:
             server_screen = await open_server_screen(
                 pilot,
@@ -107,9 +104,7 @@ class SinaraX_Server_Test_Quick(unittest.IsolatedAsyncioTestCase):
             server_screen.server_remove_button()
             await wait_workers(pilot)
             self.print_log(server_screen)
-            assert not await get_docker_error(
-                self.instanceName
-            ), "server remove error"
+            assert not await get_docker_error(self.instanceName), "server remove error"
 
             await pilot.exit(0)
 

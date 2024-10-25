@@ -18,7 +18,6 @@ def start_cmd(cmd: str):
         stderr=STDOUT,
         cwd=None,
     ) as child_process:
-
         stdout_bufer = b""
         while True:
             stdout_byte = child_process.stdout.read(1)
