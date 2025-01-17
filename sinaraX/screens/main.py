@@ -15,6 +15,7 @@ from .running import RunningScreen
 from .server import ServerScreen
 from .server_cfg import BaseFunctions
 from .update import UpdateScreen
+from .model import ModelScreen
 from .utils.infra import (
     check_docker,
     check_docker_group,
@@ -31,6 +32,7 @@ class SinaraX(App, BaseFunctions):
         "server_screen": ServerScreen,
         "update_screen": UpdateScreen,
         "running_screen": RunningScreen,
+        "model_screen": ModelScreen,
     }
 
     BINDINGS = [
@@ -49,11 +51,6 @@ class SinaraX(App, BaseFunctions):
 
     def action_exit(self):
         self.exit()
-
-    def action_save_screen(self):
-        image_folder = Path("./images/")
-        image_folder.mkdir(exist_ok=True)
-        self.save_screenshot(image_folder.joinpath("main.svg"))
 
     def compose(self):
         yield Footer()
@@ -80,6 +77,13 @@ class SinaraX(App, BaseFunctions):
             yield Button(
                 "RUNNING",
                 id="running_screen_start",
+                classes="button",
+                variant="primary",
+            )
+
+            yield Button(
+                "MODELS",
+                id="model_screen_start",
                 classes="button",
                 variant="primary",
             )
@@ -200,6 +204,10 @@ class SinaraX(App, BaseFunctions):
     @on(Button.Pressed, "#running_screen_start")
     def running_screen_start(self):
         self.push_screen("running_screen")
+
+    @on(Button.Pressed, "#model_screen_start")
+    def model_screen_start(self):
+        self.push_screen("model_screen")
 
     @on(Button.Pressed, "#exit_button")
     def exit_button(self):

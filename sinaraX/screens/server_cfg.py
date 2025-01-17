@@ -13,6 +13,12 @@ from .utils import (
 
 
 class BaseFunctions:
+    def action_save_screen(self):
+        image_folder = Path("./images/")
+        image_folder.mkdir(exist_ok=True)
+        
+        self.app.save_screenshot(image_folder.joinpath(f"{self.__class__.__name__}.svg"))
+
     def action_copy_logs(self):
         self.app.copy_to_clipboard("\n".join(self.log_window.lines))
 

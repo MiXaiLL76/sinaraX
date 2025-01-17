@@ -22,11 +22,6 @@ class UpdateScreen(ModalScreen, BaseFunctions):
     def action_update_all(self):
         self.cmd("pip install sinaraml sinaraX --upgrade")
 
-    def action_save_screen(self):
-        image_folder = Path("./images/")
-        image_folder.mkdir(exist_ok=True)
-        self.app.save_screenshot(image_folder.joinpath("update.svg"))
-
     def compose(self):
         yield Footer()
         with ScrollableContainer():

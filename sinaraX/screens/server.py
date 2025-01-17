@@ -44,11 +44,6 @@ class ServerScreen(ModalScreen, ServerFunctions):
         ("s", ""),
     ]
 
-    def action_save_screen(self):
-        image_folder = Path("./images/")
-        image_folder.mkdir(exist_ok=True)
-        self.app.save_screenshot(image_folder.joinpath("server.svg"))
-
     def compose(self):
         yield Footer()
         with TabbedContent(initial="server_tab"):
