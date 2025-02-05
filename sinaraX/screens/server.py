@@ -235,6 +235,9 @@ class ServerScreen(ModalScreen, ServerFunctions):
         if self.generate_config():
             cmd = "sinara server create --verbose "
             for key, val in self.config_dict.items():
+                if key == "image":
+                    continue
+
                 if type(val) is str:
                     val = f"'{val}'"
                 elif type(val) is int:
