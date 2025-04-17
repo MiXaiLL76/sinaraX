@@ -213,6 +213,14 @@ class ServerScreen(ModalScreen, ServerFunctions):
                             )
                             yield self.jovyanRootPath_picker
 
+                        with Collapsible(
+                            title="Sinara server platform",
+                            collapsed=False,
+                        ):
+                            yield Input(
+                                value="personal_public_desktop",
+                                name="platform",
+                            )
         with Horizontal():
             yield Button(
                 "< Back",
