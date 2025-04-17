@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "sinaraX"
-version = "1.1.12"
+version = "1.1.13"
 readme = "README.md"
 authors = ["MiXaiLL76 <mike.milos@yandex.ru>"]
 description = "sinaraX - TUI for sinaraml clin"

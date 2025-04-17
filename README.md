@@ -8,6 +8,18 @@
 | sinaraml | [![sinaraml](https://img.shields.io/pypi/v/sinaraml)](https://pypi.org/project/sinaraml) |
 | textual  | [![textual](https://img.shields.io/pypi/v/textual)](https://pypi.org/project/textual)    |
 
+## Install
+
+```bash
+pip install sinaraX
+```
+
+or install dev version
+
+```bash
+pip install git+https://github.com/MiXaiLL76/sinaraX.git -U
+```
+
 ## Motivation
 
 It is convenient to have a cli, but it is even more convenient to have a graphical interface for managing this cli.
@@ -42,12 +54,6 @@ It covers the capabilities of managing servers in [sinaraml](https://github.com/
 - Update sinaraX (`pip install sinaraX --upgrade`)
 - Back (**back to main screen**)
 - Exit
-
-## Installation
-
-```bash
-pip install sinaraX
-```
 
 ## Quick Start
 
