@@ -304,7 +304,10 @@ class ServerScreen(ModalScreen, ServerFunctions):
                     cmd += "--experimental"
             else:
                 cmd += " -h"
-
+        
+            platform = self.config_dict.get("platform", "personal_public_desktop")
+            cmd += f" --platform {platform}"
+        
         self.cmd(cmd)
 
     @on(Button.Pressed, "#help_button")
